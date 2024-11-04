@@ -18,7 +18,6 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:google_maps_flutter_android/google_maps_flutter_android.dart';
 import 'package:google_maps_flutter_platform_interface/google_maps_flutter_platform_interface.dart';
-import 'package:just_audio_background/just_audio_background.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 bool showOnboardingScreen = true;
@@ -29,11 +28,6 @@ void main() async
 {
   /// Record zoned errors - https://firebase.flutter.dev/docs/crashlytics/usage#zoned-errors
   runZonedGuarded<Future<void>>(() async {
-    await JustAudioBackground.init(
-      androidNotificationChannelId: 'com.ryanheise.bg_demo.channel.audio',
-      androidNotificationChannelName: 'Audio playback',
-      androidNotificationOngoing: true,
-    );
     WidgetsFlutterBinding.ensureInitialized();
     await Firebase.initializeApp();
 

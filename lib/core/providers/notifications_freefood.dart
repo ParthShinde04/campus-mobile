@@ -1,5 +1,4 @@
 import 'dart:collection';
-
 import 'package:campus_mobile_experimental/app_constants.dart';
 import 'package:campus_mobile_experimental/core/models/notifications.dart';
 import 'package:campus_mobile_experimental/core/models/notifications_freefood.dart';
@@ -57,7 +56,7 @@ class FreeFoodDataProvider extends ChangeNotifier {
     messages.forEach((m) async {
       if (m!.audience != null &&
           m.audience!.topics != null &&
-          m.audience!.topics!.contains("freeFood")) {
+          (m.audience!.topics!.contains("freeFood") || m.audience!.topics!.contains("testFreeFood"))) {
         fetchCount(m.messageId!);
         fetchMaxCount(m.messageId!);
       }
@@ -192,6 +191,5 @@ class FreeFoodDataProvider extends ChangeNotifier {
   DateTime? get lastUpdated => _lastUpdated;
   FreeFoodModel? get freeFoodModel => _freeFoodModel;
   List<String>? get registeredEvents => _registeredEvents;
-
   bool isLoading(String? id) => id == _curId;
 }
