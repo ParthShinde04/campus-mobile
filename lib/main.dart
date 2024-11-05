@@ -31,13 +31,10 @@ void main() async
     WidgetsFlutterBinding.ensureInitialized();
     await Firebase.initializeApp();
 
-    AndroidMapRenderer mapRenderer = AndroidMapRenderer.platformDefault;
-    final GoogleMapsFlutterPlatform mapsImplementation =
-        GoogleMapsFlutterPlatform.instance;
+    final mapsImplementation = GoogleMapsFlutterPlatform.instance;
     if (mapsImplementation is GoogleMapsFlutterAndroid) {
       WidgetsFlutterBinding.ensureInitialized();
-      mapRenderer = await mapsImplementation
-          .initializeWithRenderer(AndroidMapRenderer.latest);
+      await mapsImplementation.initializeWithRenderer(AndroidMapRenderer.latest);
     }
 
     // dotenv loading

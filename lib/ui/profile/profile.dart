@@ -82,12 +82,12 @@ class Profile extends StatelessWidget {
   //   Navigator.pushNamed(context, RoutePaths.NotificationsFilter);
   // }
 
-  handleFeedbackTap() async {
+  Future<void> handleFeedbackTap() async {
     const feedbackUrl = "https://eforms.ucsd.edu/view.php?id=668781";
     openLink(feedbackUrl);
   }
 
-  handlePrivacyTap() async {
+  Future<void> handlePrivacyTap() async {
     const privacyUrl = "https://mobile.ucsd.edu/privacy-policy.html";
     openLink(privacyUrl);
   }
