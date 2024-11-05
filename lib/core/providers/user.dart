@@ -157,7 +157,7 @@ class UserDataProvider extends ChangeNotifier {
     pc.AsymmetricKeyParameter<pc.RSAPublicKey> keyParametersPublic =
         new pc.PublicKeyParameter(publicKey);
     cipher.init(true, keyParametersPublic);
-    Uint8List output = cipher.process(utf8.encode(password) as Uint8List);
+    Uint8List output = cipher.process(utf8.encode(password));
     var base64EncodedText = base64.encode(output);
     _saveUsernameToDevice(username);
     _saveEncryptedPasswordToDevice(base64EncodedText);

@@ -17,23 +17,15 @@ class _OnboardingScreen extends State<OnboardingScreen>
       _animationController2,
       _animationController3;
   late Animation<Offset> _offsetAnimation, _offsetAnimation2, _offsetAnimation3;
-  double? currentIndex = 0;
+  int currentIndex = 0;
 
   @override
   void initState() {
     super.initState();
-    _controller.addListener(() {
-      if (_controller.page!.round() != currentIndex) {
-        setState(() {
-          currentIndex = _controller.page;
-        });
-      }
-    });
 
     _animationController =
         AnimationController(duration: const Duration(seconds: 1), vsync: this)
           ..forward();
-
     _offsetAnimation = Tween<Offset>(
       begin: Offset.zero,
       end: Offset(3.0, -0.59),
@@ -93,13 +85,18 @@ class _OnboardingScreen extends State<OnboardingScreen>
           child: Column(children: <Widget>[
             Expanded(
                 child: PageView(
-              pageSnapping: true,
-              controller: _controller,
-              children: [
-                buildPage1(width, height),
-                buildPage2(width, height),
-                buildPage3(width, height),
-              ],
+                  pageSnapping: true,
+                  controller: _controller,
+                  onPageChanged: (int page) {
+                    setState(() {
+                      currentIndex = page;
+                    });
+                  },
+                  children: [
+                    buildPage1(width, height),
+                    buildPage2(width, height),
+                    buildPage3(width, height),
+                  ],
             )),
             buildDotIndicator(),
             Container(
@@ -116,7 +113,7 @@ class _OnboardingScreen extends State<OnboardingScreen>
   Widget buildDotIndicator() {
     return DotsIndicator(
       dotsCount: 3,
-      position: currentIndex!,
+      position: currentIndex,
       decorator: DotsDecorator(
           activeColor: ColorPrimary, spacing: EdgeInsets.all(4.0)),
     );
