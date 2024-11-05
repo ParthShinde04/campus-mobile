@@ -10,61 +10,9 @@ class OnboardingScreen extends StatefulWidget {
   _OnboardingScreen createState() => _OnboardingScreen();
 }
 
-class _OnboardingScreen extends State<OnboardingScreen>
-    with TickerProviderStateMixin {
-  final _controller = PageController();
-  late AnimationController _animationController,
-      _animationController2,
-      _animationController3;
-  late Animation<Offset> _offsetAnimation, _offsetAnimation2, _offsetAnimation3;
+class _OnboardingScreen extends State<OnboardingScreen> with TickerProviderStateMixin
+{
   int currentIndex = 0;
-
-  @override
-  void initState() {
-    super.initState();
-
-    _animationController =
-        AnimationController(duration: const Duration(seconds: 1), vsync: this)
-          ..forward();
-    _offsetAnimation = Tween<Offset>(
-      begin: Offset.zero,
-      end: Offset(3.0, -0.59),
-    ).animate(CurvedAnimation(
-      parent: _animationController,
-      curve: Curves.linear,
-    ));
-
-    _animationController2 =
-        AnimationController(duration: const Duration(seconds: 1), vsync: this)
-          ..forward();
-    _offsetAnimation2 = Tween<Offset>(
-      begin: Offset.zero,
-      end: Offset(-5.0, 0.98),
-    ).animate(CurvedAnimation(
-      parent: _animationController2,
-      curve: Curves.linear,
-    ));
-
-    _animationController3 =
-        AnimationController(duration: const Duration(seconds: 1), vsync: this)
-          ..forward();
-    _offsetAnimation3 = Tween<Offset>(
-      begin: Offset.zero,
-      end: Offset(3.0, -0.59),
-    ).animate(CurvedAnimation(
-      parent: _animationController3,
-      curve: Curves.linear,
-    ));
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    _animationController.dispose();
-    _animationController2.dispose();
-    _animationController3.dispose();
-    super.dispose();
-  }
 
   @override
   void didChangeDependencies() {
@@ -86,7 +34,6 @@ class _OnboardingScreen extends State<OnboardingScreen>
             Expanded(
                 child: PageView(
                   pageSnapping: true,
-                  controller: _controller,
                   onPageChanged: (int page) {
                     setState(() {
                       currentIndex = page;
@@ -349,43 +296,39 @@ class _OnboardingScreen extends State<OnboardingScreen>
 
   Route _routeToLogin() {
     return PageRouteBuilder(
-      pageBuilder: (context, animation, secondaryAnimation) =>
-          OnboardingLogin(),
-      transitionDuration: Duration(milliseconds: 400),
-      transitionsBuilder: (context, animation, secondaryAnimation, child) {
-        var begin = Offset(0.0, 1.0);
-        var end = Offset.zero;
-        var curve = Curves.ease;
-
-        var tween =
-            Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
-
-        return SlideTransition(
-          position: animation.drive(tween),
+      pageBuilder: (_, __, ___) => OnboardingLogin(),
+      transitionDuration: const Duration(milliseconds: 400),
+      transitionsBuilder: (_, animation, __, child) =>
+        SlideTransition(
+          position: animation.drive(
+              Tween(
+                  begin: const Offset(0.0, 1.0),
+                  end: Offset.zero
+              ).chain(
+                  CurveTween(curve: Curves.ease)
+              )
+          ),
           child: child,
-        );
-      },
+        ),
     );
   }
 
   Route _routeToAffiliations() {
     return PageRouteBuilder(
-      pageBuilder: (context, animation, secondaryAnimation) =>
-          OnboardingAffiliations(),
-      transitionDuration: Duration(milliseconds: 400),
-      transitionsBuilder: (context, animation, secondaryAnimation, child) {
-        var begin = Offset(0.0, 1.0);
-        var end = Offset.zero;
-        var curve = Curves.ease;
-
-        var tween =
-            Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
-
-        return SlideTransition(
-          position: animation.drive(tween),
+      pageBuilder: (_, __, ___) => OnboardingAffiliations(),
+      transitionDuration: const Duration(milliseconds: 400),
+      transitionsBuilder: (_, animation, __, child) =>
+        SlideTransition(
+          position: animation.drive(
+              Tween(
+                  begin: const Offset(0.0, 1.0),
+                  end: Offset.zero
+              ).chain(
+                  CurveTween(curve: Curves.ease)
+              )
+          ),
           child: child,
-        );
-      },
+        ),
     );
   }
 }
