@@ -147,7 +147,7 @@ class _LoginState extends State<Login> {
                   icon: Icon(
                     // Based on passwordObscured state choose the icon
                     _passwordObscured ? Icons.visibility_off : Icons.visibility,
-                    color: Theme.of(context).primaryColorDark,
+                    color: Color(0xFF777777),
                   ),
                   onPressed: () => _toggle(),
                 ),

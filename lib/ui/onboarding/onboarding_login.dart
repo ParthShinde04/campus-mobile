@@ -29,6 +29,9 @@ class _OnboardingLoginState extends State<OnboardingLogin> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: BackButton(
+            color: Colors.white
+        ),
         elevation: 0.0,
         systemOverlayStyle: SystemUiOverlayStyle.light,
       ),

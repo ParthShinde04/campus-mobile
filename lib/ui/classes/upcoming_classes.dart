@@ -42,7 +42,7 @@ class UpcomingCoursesList extends StatelessWidget {
                   .selectCourse(index),
           title: buildClassTitle(data),
           subtitle: buildClassTimeText(data, context),
-          selected: index == selectedCourse,
+          //selected: index == selectedCourse,
           enabled: true,
         ),
       ),
@@ -51,13 +51,14 @@ class UpcomingCoursesList extends StatelessWidget {
 
   BoxDecoration createBorder() {
     return BoxDecoration(
-      border: Border.all(width: 1),
+      border: Border.all(width: 1, color: Color(0xFF333333)),
     );
   }
 
   Widget buildClassTimeText(SectionData sectionData, BuildContext context) {
     return Text(
       sectionData.days! + ' @ ' + getStartTime(sectionData.time!, context),
+      //style: TextStyle(color: Colors.grey),
     );
   }
 

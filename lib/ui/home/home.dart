@@ -243,7 +243,8 @@ class _HomeState extends State<Home> {
             orderedCards.add(ParkingCard());
             break;
           case 'speed_test':
-            orderedCards.add(WiFiCard());
+            /// TODO: FIX WIFI CARD SO THAT IT DOES NOT THROW AN ASYNCHRONOUS SUSPENSION
+            //orderedCards.add(WiFiCard());
             break;
           case 'shuttle':
             orderedCards.add(ShuttleCard());
