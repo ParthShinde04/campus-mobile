@@ -42,6 +42,7 @@ class UpcomingCoursesList extends StatelessWidget {
                   .selectCourse(index),
           title: buildClassTitle(data),
           subtitle: buildClassTimeText(data, context),
+          /// TODO: Examine this later
           //selected: index == selectedCourse,
           enabled: true,
         ),
