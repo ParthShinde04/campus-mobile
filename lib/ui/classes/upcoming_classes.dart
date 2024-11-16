@@ -21,7 +21,7 @@ class UpcomingCoursesList extends StatelessWidget {
     });
     return Container(
         constraints:
-            BoxConstraints(maxHeight: MediaQuery.of(context).size.height * 0.3),
+            BoxConstraints(maxHeight: MediaQuery.of(context).size.height * 0.34),
         child: ListView(
           children: listOfCourses,
           shrinkWrap: true,
@@ -33,7 +33,7 @@ class UpcomingCoursesList extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(top: 4.0, right: 8.0),
       child: Container(
-        constraints: BoxConstraints.tightFor(height: 65),
+        constraints: BoxConstraints.tightFor(height: 64),
         decoration: createBorder(),
         child: ListTile(
           dense: true,
@@ -42,8 +42,8 @@ class UpcomingCoursesList extends StatelessWidget {
                   .selectCourse(index),
           title: buildClassTitle(data),
           subtitle: buildClassTimeText(data, context),
-          /// TODO: Examine this later
-          //selected: index == selectedCourse,
+          /// TODO: Examine how this behaves and if the color can be changed later
+          // selected: index == selectedCourse,
           enabled: true,
         ),
       ),
