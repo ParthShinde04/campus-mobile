@@ -42,8 +42,10 @@ class UpcomingCoursesList extends StatelessWidget {
                   .selectCourse(index),
           title: buildClassTitle(data),
           subtitle: buildClassTimeText(data, context),
-          /// TODO: Examine how this behaves and if the color can be changed later
-          // selected: index == selectedCourse,
+          selected: index == selectedCourse,
+          selectedColor:  Theme.of(context).brightness == Brightness.dark // if true, then currently using dark theme
+              ? Color(0xFF00C6D7) // Dark theme text color (UC San Diego Turquoise)
+              : Color(0xFF00629B), // Light theme text color (UC San Diego Blue)
           enabled: true,
         ),
       ),
@@ -58,8 +60,7 @@ class UpcomingCoursesList extends StatelessWidget {
 
   Widget buildClassTimeText(SectionData sectionData, BuildContext context) {
     return Text(
-      sectionData.days! + ' @ ' + getStartTime(sectionData.time!, context),
-      //style: TextStyle(color: Colors.grey),
+      sectionData.days! + ' @ ' + getStartTime(sectionData.time!, context)
     );
   }
 
