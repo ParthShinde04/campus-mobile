@@ -90,6 +90,7 @@ class CampusMobile extends StatelessWidget {
       textTheme: lightThemeText,
       iconTheme: lightIconTheme,
       appBarTheme: lightAppBarTheme,
+      listTileTheme: lightListTileTheme,
       colorScheme:
         ColorScheme.fromSwatch(primarySwatch: ColorPrimary)
           .copyWith(
@@ -105,6 +106,7 @@ class CampusMobile extends StatelessWidget {
       iconTheme: darkIconTheme,
       appBarTheme: darkAppBarTheme,
       unselectedWidgetColor: darkAccentColor,
+      listTileTheme: darkListTileTheme,
       colorScheme:
         ColorScheme.fromSwatch(primarySwatch: ColorPrimary)
           .copyWith(

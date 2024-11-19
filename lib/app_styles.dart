@@ -113,3 +113,7 @@ const debugRow = TextStyle(color: lightTextColor, fontSize: 12.0);
 const Color c1 = Color.fromARGB(255, 255, 0, 0);
 const Color c2 = Color.fromARGB(255, 0, 255, 0);
 const Color c3 = Color.fromARGB(255, 0, 0, 255);
+
+// List Tile Theme Data
+const lightListTileTheme = ListTileThemeData(selectedColor: const Color(0xFF00C6D7));
+const darkListTileTheme = ListTileThemeData(selectedColor: const Color(0xFF00629B));
