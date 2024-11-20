@@ -1,5 +1,4 @@
 import 'dart:io' show Platform;
-
 import 'package:campus_mobile_experimental/app_constants.dart';
 import 'package:campus_mobile_experimental/core/providers/user.dart';
 import 'package:campus_mobile_experimental/core/services/barcode.dart';
@@ -18,7 +17,6 @@ class ScannerDataProvider extends ChangeNotifier
   late String _licenseKey;
   BarcodeService _barcodeService = BarcodeService();
   late UserDataProvider _userDataProvider;
-
   String? _barcode;
   bool isLoading = false;
   bool _isDuplicate = false;
@@ -175,8 +173,9 @@ class ScannerDataProvider extends ChangeNotifier
       _didError = true;
       isLoading = false;
       errorText = ScannerConstants.unknownError;
+    } finally {
+      notifyListeners();
     }
-    notifyListeners();
   }
 
   /// Simple setters and getters

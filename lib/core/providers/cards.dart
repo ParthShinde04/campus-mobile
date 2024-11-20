@@ -65,6 +65,7 @@ class CardsDataProvider extends ChangeNotifier {
   late Map<String, CardsModel> _availableCards;
   late Box _cardOrderBox;
   late Box _cardStateBox;
+
   UserDataProvider? _userDataProvider;
 
   ///Services
@@ -141,13 +142,8 @@ class CardsDataProvider extends ChangeNotifier {
   Future<void> initConnectivity() async {
     try {
       var status = await _connectivity.checkConnectivity();
-      if (status == ConnectivityResult.none) {
-        _noInternet = true;
-        notifyListeners();
-      } else {
-        _noInternet = false;
-        notifyListeners();
-      }
+      _noInternet = (status == ConnectivityResult.none);
+      notifyListeners();
     } catch (e) {
       print("Encounter $e when monitoring Internet for cards");
     }
@@ -156,13 +152,8 @@ class CardsDataProvider extends ChangeNotifier {
   void monitorInternet() async {
     await initConnectivity();
     _connectivity.onConnectivityChanged.listen((result) async {
-      if (result == ConnectivityResult.none) {
-        _noInternet = true;
-        notifyListeners();
-      } else {
-        _noInternet = false;
-        notifyListeners();
-      }
+      _noInternet = (result == ConnectivityResult.none);
+      notifyListeners();
     });
   }
 
@@ -175,7 +166,7 @@ class CardsDataProvider extends ChangeNotifier {
 
   /// Update the [_cardOrder] stored in state
   /// overwrite the [_cardOrder] in persistent storage with the model passed in
-  Future updateCardOrder(List<String>? newOrder) async {
+  Future updateCardOrder(List<String> newOrder) async {
     if (_userDataProvider == null || _userDataProvider!.isInSilentLogin) {
       return;
     }
@@ -241,13 +232,13 @@ class CardsDataProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  _deactivateAllCards() {
+  void _deactivateAllCards() {
     for (String card in _cardStates.keys) {
       _cardStates[card] = false;
     }
   }
 
-  activateStudentCards() {
+  void activateStudentCards() {
     int index = _cardOrder.indexOf('MyStudentChart') + 1;
     _cardOrder.insertAll(index, _studentCards.toList());
 
@@ -255,11 +246,10 @@ class CardsDataProvider extends ChangeNotifier {
     _cardOrder = List.from(_cardOrder.toSet().toList());
 
     updateCardOrder(_cardOrder);
-    updateCardStates(
-        _cardStates.keys.where((card) => _cardStates[card]!).toList());
+    updateCardStates(_cardStates.keys.where((card) => _cardStates[card]!).toList());
   }
 
-  showAllStudentCards() {
+  void showAllStudentCards() {
     int index = _cardOrder.indexOf('MyStudentChart') + 1;
     _cardOrder.insertAll(index, _studentCards.toList());
 
@@ -271,32 +261,29 @@ class CardsDataProvider extends ChangeNotifier {
     }
 
     updateCardOrder(_cardOrder);
-    updateCardStates(
-        _cardStates.keys.where((card) => _cardStates[card]!).toList());
+    updateCardStates(_cardStates.keys.where((card) => _cardStates[card]!).toList());
   }
 
-  deactivateStudentCards() {
+  void deactivateStudentCards() {
     for (String card in _studentCards) {
       _cardOrder.remove(card);
       _cardStates[card] = false;
     }
     updateCardOrder(_cardOrder);
-    updateCardStates(
-        _cardStates.keys.where((card) => _cardStates[card]!).toList());
+    updateCardStates(_cardStates.keys.where((card) => _cardStates[card]!).toList());
   }
 
-  activateStaffCards() {
+  void activateStaffCards() {
     int index = _cardOrder.indexOf('MyStudentChart') + 1;
     _cardOrder.insertAll(index, _staffCards.toList());
 
     // TODO: test w/o this
     _cardOrder = List.from(_cardOrder.toSet().toList());
     updateCardOrder(_cardOrder);
-    updateCardStates(
-        _cardStates.keys.where((card) => _cardStates[card]!).toList());
+    updateCardStates(_cardStates.keys.where((card) => _cardStates[card]!).toList());
   }
 
-  showAllStaffCards() {
+  void showAllStaffCards() {
     int index = _cardOrder.indexOf('MyStudentChart') + 1;
     _cardOrder.insertAll(index, _staffCards.toList());
 
@@ -307,18 +294,16 @@ class CardsDataProvider extends ChangeNotifier {
       _cardStates[card] = true;
     }
     updateCardOrder(_cardOrder);
-    updateCardStates(
-        _cardStates.keys.where((card) => _cardStates[card]!).toList());
+    updateCardStates(_cardStates.keys.where((card) => _cardStates[card]!).toList());
   }
 
-  deactivateStaffCards() {
+  void deactivateStaffCards() {
     for (String card in _staffCards) {
       _cardOrder.remove(card);
       _cardStates[card] = false;
     }
     updateCardOrder(_cardOrder);
-    updateCardStates(
-        _cardStates.keys.where((card) => _cardStates[card]!).toList());
+    updateCardStates(_cardStates.keys.where((card) => _cardStates[card]!).toList());
   }
 
   void reorderCards(List<String> order) {

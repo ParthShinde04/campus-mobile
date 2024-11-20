@@ -21,8 +21,7 @@ class ScannerMessageDataProvider extends ChangeNotifier
   void fetchData() async {
     // forcing fetchData() to be executed async
     await Future.delayed(Duration.zero);
-    _isLoading = true;
-    _error = null;
+    _isLoading = true; _error = null;
     notifyListeners();
 
     /// Verify that user is logged in

@@ -93,10 +93,11 @@ class CircularParkingIndicators extends StatelessWidget {
                             animation: true,
                             animationDuration: 1000,
                             lineWidth: 7.5,
-                            percent: open / total,
+                            percent: (open / total).isNaN ? 0.0 : open / total,
                             center: Text(
-                                ((open / total) * 100).round().toString() + "%",
-                                style: TextStyle(fontSize: 22)),
+                                (open / total).isNaN ? "N/A" : ((open / total) * 100).round().toString() + "%",
+                                style: TextStyle(fontSize: 22)
+                            ),
                             circularStrokeCap: CircularStrokeCap.round,
                             backgroundColor: colorFromHex('#EDECEC'),
                             progressColor: getColor(open / total),
@@ -118,9 +119,7 @@ class CircularParkingIndicators extends StatelessWidget {
                                   color: colorFromHex(spotType.textColor),
                                 )
                               : Text(
-                                  spotType.spotKey.contains("SR")
-                                      ? "RS"
-                                      : spotType.text,
+                                  spotType.text!,
                                   style: TextStyle(
                                     color: colorFromHex(spotType.textColor),
                                   ),
@@ -167,9 +166,7 @@ class CircularParkingIndicators extends StatelessWidget {
                                   size: 25.0,
                                   color: colorFromHex(spotType.textColor))
                               : Text(
-                                  spotType.spotKey.contains("SR")
-                                      ? "RS"
-                                      : spotType.text,
+                                  spotType.text!,
                                   style: TextStyle(
                                     color: colorFromHex(spotType.textColor),
                                   ),

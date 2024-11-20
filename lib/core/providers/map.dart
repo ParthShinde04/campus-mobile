@@ -1,5 +1,4 @@
 import 'dart:math';
-
 import 'package:campus_mobile_experimental/core/models/location.dart';
 import 'package:campus_mobile_experimental/core/models/map.dart';
 import 'package:campus_mobile_experimental/core/services/map.dart';
@@ -25,7 +24,6 @@ class MapsDataProvider extends ChangeNotifier
   Map<MarkerId, Marker> _markers = Map<MarkerId, Marker>();
   TextEditingController _searchBarController = TextEditingController();
   GoogleMapController? _mapController;
-
   List<String> _searchHistory = [];
 
   ///SERVICES
@@ -93,8 +91,7 @@ class MapsDataProvider extends ChangeNotifier
         _searchHistory.add(query); // ...If it is not, add it...
       } else {
         // ...otherwise...
-        _searchHistory
-            .remove(query); // ...reorder search history to put it back on top
+        _searchHistory.remove(query); // ...reorder search history to put it back on top
         _searchHistory.add(query);
       }
       _lastUpdated = DateTime.now();
