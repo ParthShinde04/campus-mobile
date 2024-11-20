@@ -9,7 +9,7 @@ class WeatherService {
   String? _error;
   final NetworkHelper _networkHelper = NetworkHelper();
   final String endpoint = dotenv.get('WEATHER_ENDPOINT');
-  WeatherModel _weatherModel = WeatherModel();
+  late WeatherModel _weatherModel;
 
   Future<bool> fetchData() async {
     _error = null; _isLoading = true;

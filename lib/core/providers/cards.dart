@@ -176,7 +176,7 @@ class CardsDataProvider extends ChangeNotifier {
       _cardOrderBox = await Hive.openBox(DataPersistence.cardOrder);
       await _cardOrderBox.put(DataPersistence.cardOrder, newOrder);
     }
-    _cardOrder = newOrder!;
+    _cardOrder = newOrder;
     _lastUpdated = DateTime.now();
     notifyListeners();
   }

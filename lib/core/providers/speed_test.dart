@@ -40,7 +40,7 @@ class SpeedTestProvider extends ChangeNotifier {
   final mobileLoggerApi = dotenv.get('MOBILE_APP_LOGGER');
 
   SpeedTestProvider() {
-    // TODO: this is a bug! Async functions cannot be run in the constructor
+    // TODO: probably is a bug! Async functions should not be be run in the constructor
     init();
   }
 

@@ -202,7 +202,7 @@ class UserDataProvider extends ChangeNotifier
       resetNotificationsScrollOffset();
       if (await _authenticationService
           .silentLogin(base64EncodedWithEncryptedPassword)) {
-        await updateAuthenticationModel(_authenticationService.data);
+        await updateAuthenticationModel(_authenticationService.data!);
         await fetchUserProfile();
 
         CardsDataProvider _cardsDataProvider = CardsDataProvider();
@@ -233,7 +233,7 @@ class UserDataProvider extends ChangeNotifier
     resetHomeScrollOffset();
     resetAllCardHeights();
     resetNotificationsScrollOffset();
-    _pushNotificationDataProvider.unregisterDevice(_authenticationModel!.accessToken);
+    _pushNotificationDataProvider.unregisterDevice(_authenticationModel.accessToken);
     updateAuthenticationModel(AuthenticationModel.fromJson({}));
     updateUserProfileModel(await _createNewUser(UserProfileModel.fromJson({})));
     _deletePasswordFromDevice();

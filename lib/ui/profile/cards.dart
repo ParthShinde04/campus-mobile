@@ -40,7 +40,7 @@ class _CardsViewState extends State<CardsView> {
         onReorder: _onReorder
     );
 
-    if (_cardsDataProvider.noInternet!) {
+    if (_cardsDataProvider.noInternet) {
       Future.delayed(
           Duration.zero,
           () => {
@@ -66,9 +66,9 @@ class _CardsViewState extends State<CardsView> {
     if (newIndex > oldIndex) {
       newIndex -= 1;
     }
-    List<String> newOrder = _cardsDataProvider.cardOrder!;
+    List<String> newOrder = _cardsDataProvider.cardOrder;
     List<String> toRemove = [];
-    if (_cardsDataProvider.cardOrder!.contains('NativeScanner')) {
+    if (_cardsDataProvider.cardOrder.contains('NativeScanner')) {
       toRemove.add('NativeScanner');
     }
 
@@ -86,7 +86,7 @@ class _CardsViewState extends State<CardsView> {
 
   List<Widget> createList(BuildContext context) {
     List<Widget> list = [];
-    for (String card in _cardsDataProvider.cardOrder!) {
+    for (String card in _cardsDataProvider.cardOrder) {
       if (card == 'NativeScanner') continue;
       try {
         list.add(Card(
@@ -97,9 +97,9 @@ class _CardsViewState extends State<CardsView> {
             padding: EdgeInsets.all(cardPaddingInner),
             child: ListTile(
               leading: Icon(Icons.reorder),
-              title: Text(_cardsDataProvider.availableCards[card]!.titleText!),
+              title: Text(_cardsDataProvider.availableCards[card]!.titleText),
               trailing: Switch(
-                value: _cardsDataProvider.cardStates![card]!,
+                value: _cardsDataProvider.cardStates[card]!,
                 onChanged: (_) {
                   _cardsDataProvider.toggleCard(card);
                 },

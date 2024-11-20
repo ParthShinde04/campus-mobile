@@ -51,7 +51,7 @@ class _WiFiCardState extends State<WiFiCard> with AutomaticKeepAliveClientMixin 
       reload: () => cardState != TestStatus.running
           ? Provider.of<SpeedTestProvider>(context, listen: false).init()
           : print("running test..."),
-      isLoading: _speedTestProvider.isLoading,
+      isLoading: _speedTestProvider.isLoading!,
       titleText: CardTitleConstants.titleMap[cardId]!,
       errorText: _speedTestProvider.error,
       child: () => buildCardContent(context),

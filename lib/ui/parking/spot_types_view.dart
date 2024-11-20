@@ -53,7 +53,7 @@ class _SpotTypesViewState extends State<SpotTypesView> {
                     ? Icon(Icons.accessible,
                         size: 25.0, color: colorFromHex(data.textColor))
                     : Text(
-                        data.text!,
+                        data.text,
                         style: TextStyle(color: textColor),
                       ))),
         title: Text(data.name),

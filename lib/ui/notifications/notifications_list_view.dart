@@ -146,7 +146,7 @@ class _NotificationsListViewState extends State<NotificationsListView> {
       physics: NeverScrollableScrollPhysics(),
       children: <Widget>[
         ListTile(
-            leading: Icon(NotificationsSettingsView.chooseIcons(messageType!),
+            leading: Icon(NotificationsSettingsView.chooseIcons(messageType),
                 color: Theme.of(context).colorScheme.secondary, size: 30),
             title: Column(
               children: <Widget>[

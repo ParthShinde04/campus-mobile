@@ -119,7 +119,7 @@ class CircularParkingIndicators extends StatelessWidget {
                                   color: colorFromHex(spotType.textColor),
                                 )
                               : Text(
-                                  spotType.text!,
+                                  spotType.text,
                                   style: TextStyle(
                                     color: colorFromHex(spotType.textColor),
                                   ),
@@ -166,7 +166,7 @@ class CircularParkingIndicators extends StatelessWidget {
                                   size: 25.0,
                                   color: colorFromHex(spotType.textColor))
                               : Text(
-                                  spotType.text!,
+                                  spotType.text,
                                   style: TextStyle(
                                     color: colorFromHex(spotType.textColor),
                                   ),

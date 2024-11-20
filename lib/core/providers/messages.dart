@@ -47,7 +47,7 @@ class MessagesDataProvider extends ChangeNotifier {
     if (clearMessages) {
       _clearMessages();
     }
-    if (_userDataProvider != null && _userDataProvider!.isLoggedIn) {
+    if (userDataProvider != null && userDataProvider!.isLoggedIn) {
       returnVal = await retrieveMoreMyMessages();
     } else {
       returnVal = await retrieveMoreTopicMessages();
@@ -78,9 +78,7 @@ class MessagesDataProvider extends ChangeNotifier {
       List<MessageElement> temp = _messageService.messagingModels.messages;
       updateMessages(temp);
       makeOrderedMessagesList();
-      returnedTimestamp = _messageService.messagingModels!.next == null
-          ? 0
-          : _messageService.messagingModels!.next;
+      returnedTimestamp = _messageService.messagingModels.next ?? 0;
       // checks if we have no more messages to paginate through
       _hasMoreMessagesToLoad = !(_previousTimestamp == returnedTimestamp || returnedTimestamp == 0);
       _lastUpdated = DateTime.now();
@@ -102,7 +100,7 @@ class MessagesDataProvider extends ChangeNotifier {
       List<MessageElement> temp = _messageService.messagingModels.messages;
       updateMessages(temp);
       makeOrderedMessagesList();
-      returnedTimestamp = _messageService.messagingModels!.next ?? 0;
+      returnedTimestamp = _messageService.messagingModels.next ?? 0;
       // checks if we have no more messages to paginate through
       _hasMoreMessagesToLoad = !(_previousTimestamp == returnedTimestamp || returnedTimestamp == 0);
       _lastUpdated = DateTime.now();
