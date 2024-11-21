@@ -1,4 +1,4 @@
-import 'package:connectivity/connectivity.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:campus_mobile_experimental/app_constants.dart';
 import 'package:get/get.dart';
@@ -54,7 +54,7 @@ class InternetConnectivityProvider extends ChangeNotifier {
           child: Text('Ok'),
           style: TextButton.styleFrom(
             // primary: Theme.of(context).buttonColor,
-            foregroundColor: Theme.of(context).backgroundColor,
+            foregroundColor: Theme.of(context).colorScheme.surface,
           ),
         ),
       ],

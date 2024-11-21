@@ -12,7 +12,6 @@ import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
-import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -20,30 +19,26 @@ import 'package:google_maps_flutter_android/google_maps_flutter_android.dart';
 import 'package:google_maps_flutter_platform_interface/google_maps_flutter_platform_interface.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-late bool showOnboardingScreen;
-
+bool showOnboardingScreen = true;
 bool isFirstRunFlag = false;
 bool executedInitialDeeplinkQuery = false;
 
-void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
-
-  AndroidMapRenderer mapRenderer = AndroidMapRenderer.platformDefault;
-// ···
-  final GoogleMapsFlutterPlatform mapsImplementation =
-      GoogleMapsFlutterPlatform.instance;
-  if (mapsImplementation is GoogleMapsFlutterAndroid) {
-    WidgetsFlutterBinding.ensureInitialized();
-    mapRenderer = await mapsImplementation
-        .initializeWithRenderer(AndroidMapRenderer.latest);
-  }
-
-  // dotenv loading
-  await dotenv.load(isOptional: true);
-
+void main() async
+{
   /// Record zoned errors - https://firebase.flutter.dev/docs/crashlytics/usage#zoned-errors
   runZonedGuarded<Future<void>>(() async {
+    WidgetsFlutterBinding.ensureInitialized();
+    await Firebase.initializeApp();
+
+    final mapsImplementation = GoogleMapsFlutterPlatform.instance;
+    if (mapsImplementation is GoogleMapsFlutterAndroid) {
+      WidgetsFlutterBinding.ensureInitialized();
+      await mapsImplementation.initializeWithRenderer(AndroidMapRenderer.latest);
+    }
+
+    // dotenv loading
+    await dotenv.load(isOptional: true);
+
     /// Enable crash analytics - https://firebase.flutter.dev/docs/crashlytics/usage#toggle-crashlytics-collection
     await FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(true);
 
@@ -52,16 +47,16 @@ void main() async {
     await initializeHive();
     await initializeApp();
     runApp(CampusMobile());
-  }, FirebaseCrashlytics.instance.recordError);
+  }, (error, stack) => FirebaseCrashlytics.instance.recordError(error, stack));
 }
 
-initializeHive() async {
+Future<void> initializeHive() async {
   await Hive.initFlutter('.');
   Hive.registerAdapter(AuthenticationModelAdapter());
   Hive.registerAdapter(UserProfileModelAdapter());
 }
 
-initializeApp() async {
+Future<void> initializeApp() async {
   final prefs = await SharedPreferences.getInstance();
   if (prefs.getBool('first_run') ?? true) {
     await clearSecuredStorage();
@@ -73,12 +68,12 @@ initializeApp() async {
   showOnboardingScreen = prefs.getBool('showOnboardingScreen') ?? true;
 }
 
-clearSecuredStorage() async {
+Future<void> clearSecuredStorage() async {
   FlutterSecureStorage storage = FlutterSecureStorage();
   await storage.deleteAll();
 }
 
-clearHiveStorage() async {
+Future<void> clearHiveStorage() async {
   await (await Hive.openBox(DataPersistence.cardStates)).deleteFromDisk();
   await (await Hive.openBox(DataPersistence.cardOrder)).deleteFromDisk();
   await (await Hive.openBox(DataPersistence.AuthenticationModel))
@@ -90,26 +85,34 @@ class CampusMobile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = ThemeData(
-      primarySwatch: ColorPrimary,
+      useMaterial3: false,
       primaryColor: lightPrimaryColor,
-      brightness: Brightness.light,
-      // buttonColor: lightButtonColor,
-      backgroundColor: lightButtonColor, // added
       textTheme: lightThemeText,
       iconTheme: lightIconTheme,
       appBarTheme: lightAppBarTheme,
+      listTileTheme: lightListTileTheme,
+      colorScheme:
+        ColorScheme.fromSwatch(primarySwatch: ColorPrimary)
+          .copyWith(
+            background: lightButtonColor,
+            brightness: Brightness.light, // added
+          ),
     );
 
     final ThemeData darkTheme = ThemeData(
-      primarySwatch: ColorPrimary,
+      useMaterial3: false,
       primaryColor: darkPrimaryColor,
-      brightness: Brightness.dark,
-      // buttonColor: darkButtonColor,
-      backgroundColor: darkButtonColor, // added
       textTheme: darkThemeText,
       iconTheme: darkIconTheme,
       appBarTheme: darkAppBarTheme,
       unselectedWidgetColor: darkAccentColor,
+      listTileTheme: darkListTileTheme,
+      colorScheme:
+        ColorScheme.fromSwatch(primarySwatch: ColorPrimary)
+          .copyWith(
+            background: darkButtonColor,
+            brightness: Brightness.dark, // added
+          ),
     );
 
     return MultiProvider(
