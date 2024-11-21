@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:io';
-
 import 'package:campus_mobile_experimental/app_constants.dart';
 import 'package:campus_mobile_experimental/app_networking.dart';
 import 'package:campus_mobile_experimental/core/models/location.dart';
@@ -9,6 +8,7 @@ import 'package:campus_mobile_experimental/core/providers/user.dart';
 import 'package:campus_mobile_experimental/core/services/speed_test.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:path_provider/path_provider.dart';
 
 class SpeedTestProvider extends ChangeNotifier {
@@ -37,8 +37,7 @@ class SpeedTestProvider extends ChangeNotifier {
     "accept": "application/json",
   };
   Map<String, String>? offloadDataHeader;
-  final String mobileLoggerApi =
-      'https://api-qa.ucsd.edu:8243/mobileapplogger/v1.1.0/log';
+  final mobileLoggerApi = dotenv.get('MOBILE_APP_LOGGER');
 
   SpeedTestProvider() {
     _isLoading = false;
@@ -120,16 +119,16 @@ class SpeedTestProvider extends ChangeNotifier {
           cancelToken: _cancelTokenUpload);
     } catch (e) {
       print(e);
+    } finally {
+      _timer.stop();
+      notifyListeners();
     }
-    _timer.stop();
-    notifyListeners();
   }
 
   Future downloadSpeedTest() async {
     String path = (await getApplicationDocumentsDirectory()).path;
     //create file
     File tempDownload = File(path + "/temp.html");
-    // _timer.start();
     notifyListeners();
     try {
       _cancelTokenDownload = new CancelToken();
@@ -139,18 +138,17 @@ class SpeedTestProvider extends ChangeNotifier {
           cancelToken: _cancelTokenDownload);
     } catch (e) {
       print(e);
+    } finally {
+      _timer.stop();
+      notifyListeners();
     }
-    _timer.stop();
-    notifyListeners();
   }
 
   _progressCallbackDownload(int bytesDownloaded, int totalBytes) {
     _secondsElapsedDownload = _timer.elapsed.inSeconds;
     double speedInBytes = (bytesDownloaded / _timer.elapsed.inSeconds);
     _speedDownload = _convertToMbps(speedInBytes);
-
     _percentDownloaded = bytesDownloaded / totalBytes;
-
     notifyListeners();
   }
 
@@ -263,12 +261,12 @@ class SpeedTestProvider extends ChangeNotifier {
       }
     } else {
       try {
-        getNewToken().then((value) {
+        _networkHelper.getNewToken(headers).then((value) {
           _networkHelper.authorizedPost(
               mobileLoggerApiWifi, headers, json.encode(log));
         });
       } catch (exception) {
-        getNewToken().then((value) {
+        _networkHelper.getNewToken(headers).then((value) {
           _networkHelper.authorizedPost(
               mobileLoggerApiWifi, headers, json.encode(log));
         });
@@ -332,36 +330,16 @@ class SpeedTestProvider extends ChangeNotifier {
       }
     } else {
       try {
-        getNewToken().then((value) {
+        _networkHelper.getNewToken(headers).then((value) {
           _networkHelper.authorizedPost(
               mobileLoggerApiWifiReport, headers, json.encode(wiFiLog));
         });
       } catch (exception) {
-        getNewToken().then((value) {
+        _networkHelper.getNewToken(headers).then((value) {
           _networkHelper.authorizedPost(
               mobileLoggerApiWifiReport, headers, json.encode(wiFiLog));
         });
       }
-    }
-  }
-
-  Future<bool> getNewToken() async {
-    final String tokenEndpoint = "https://api-qa.ucsd.edu:8243/token";
-    final Map<String, String> tokenHeaders = {
-      "content-type": 'application/x-www-form-urlencoded',
-      "Authorization":
-          "Basic djJlNEpYa0NJUHZ5akFWT0VRXzRqZmZUdDkwYTp2emNBZGFzZWpmaWZiUDc2VUJjNDNNVDExclVh"
-    };
-    try {
-      return _networkHelper
-          .authorizedPost(
-              tokenEndpoint, tokenHeaders, "grant_type=client_credentials")
-          .then((response) {
-        headers["Authorization"] = "Bearer " + response["access_token"];
-        return true;
-      });
-    } catch (e) {
-      return false;
     }
   }
 

@@ -18,7 +18,7 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:google_maps_flutter_android/google_maps_flutter_android.dart';
 import 'package:google_maps_flutter_platform_interface/google_maps_flutter_platform_interface.dart';
-import 'package:just_audio_background/just_audio_background.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 late bool showOnboardingScreen;
 
@@ -26,15 +26,11 @@ bool isFirstRunFlag = false;
 bool executedInitialDeeplinkQuery = false;
 
 void main() async {
-  await JustAudioBackground.init(
-    androidNotificationChannelId: 'com.ryanheise.bg_demo.channel.audio',
-    androidNotificationChannelName: 'Audio playback',
-    androidNotificationOngoing: true,
-  );
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
 
   AndroidMapRenderer mapRenderer = AndroidMapRenderer.platformDefault;
+// ···
   final GoogleMapsFlutterPlatform mapsImplementation =
       GoogleMapsFlutterPlatform.instance;
   if (mapsImplementation is GoogleMapsFlutterAndroid) {
@@ -42,6 +38,9 @@ void main() async {
     mapRenderer = await mapsImplementation
         .initializeWithRenderer(AndroidMapRenderer.latest);
   }
+
+  // dotenv loading
+  await dotenv.load(isOptional: true);
 
   /// Record zoned errors - https://firebase.flutter.dev/docs/crashlytics/usage#zoned-errors
   runZonedGuarded<Future<void>>(() async {

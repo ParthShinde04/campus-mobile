@@ -8,6 +8,7 @@
 .buildlog/
 .history
 .svn/
+*.env
 
 # IntelliJ related
 *.iml
@@ -15,10 +16,8 @@
 *.iws
 .idea/
 
-# The .vscode folder contains launch configuration and tasks you configure in
-# VS Code which you may wish to be included in version control, so this line
-# is commented out by default.
-#.vscode/
+# VS Code related
+.vscode/
 
 # Flutter/Dart/Pub related
 .flutter-plugins-dependencies
@@ -51,6 +50,7 @@ android/.project
 android/app/.classpath
 android/app/.project
 android/app/.settings/
+android/app/google-services.json
 
 # iOS/XCode related
 **/ios/**/*.mode1v3

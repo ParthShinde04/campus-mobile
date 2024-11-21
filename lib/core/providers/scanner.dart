@@ -1,9 +1,9 @@
 import 'dart:io' show Platform;
-
 import 'package:campus_mobile_experimental/app_constants.dart';
 import 'package:campus_mobile_experimental/core/providers/user.dart';
 import 'package:campus_mobile_experimental/core/services/barcode.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_scandit_plugin/flutter_scandit_plugin.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -11,7 +11,6 @@ class ScannerDataProvider extends ChangeNotifier {
   ScannerDataProvider() {
     ///DEFAULT STATES
     isLoading = false;
-
     ///INITIALIZE SERVICES
     _barcodeService = BarcodeService();
   }
@@ -20,11 +19,9 @@ class ScannerDataProvider extends ChangeNotifier {
   bool? hasSubmitted;
   bool? _didError;
   String? _message = '';
-
   String? _licenseKey;
   late BarcodeService _barcodeService;
   late UserDataProvider _userDataProvider;
-
   String? _barcode;
   late bool isLoading;
   bool? _isDuplicate;
@@ -37,9 +34,9 @@ class ScannerDataProvider extends ChangeNotifier {
 
   void initState() {
     if (Platform.isIOS) {
-      _licenseKey = 'SCANDIT_NATIVE_LICENSE_IOS_PH';
+      _licenseKey = dotenv.get('SCANDIT_NATIVE_LICENSE_IOS');
     } else if (Platform.isAndroid) {
-      _licenseKey = 'SCANDIT_NATIVE_LICENSE_ANDROID_PH';
+      _licenseKey = dotenv.get('SCANDIT_NATIVE_LICENSE_ANDROID');
     }
 
     errorText = "Something went wrong, please try again.";
@@ -179,8 +176,9 @@ class ScannerDataProvider extends ChangeNotifier {
       _didError = true;
       isLoading = false;
       errorText = ScannerConstants.unknownError;
+    } finally {
+      notifyListeners();
     }
-    notifyListeners();
   }
 
   /// Simple setters and getters
