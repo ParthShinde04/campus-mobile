@@ -185,11 +185,11 @@ class _HomeState extends State<Home> {
   {
     final orderedCards = getOrderedCardsList(context.watch<CardsDataProvider>().cardOrder!);
     final noticesCards = getNoticesCardsList(context.watch<NoticesDataProvider>().noticesModel!);
-    return noticesCards + orderedCards;
+    return [...noticesCards, ...orderedCards];
   }
 
   List<Widget> getNoticesCardsList(List<NoticesModel> notices) =>
-    notices.map((notice) => NoticesCard(notice: notice)).toList();
+    notices.map((notice) => NoticesCard(notice: notice)).whereType<NoticesCard>().toList();
 
   // Constructor tear-offs used below to generate ordered cards list in O(1) time
   static const _cardCtors = {
@@ -216,6 +216,7 @@ class _HomeState extends State<Home> {
     final webCards = context.read<CardsDataProvider>().webCards;
 
     for (String cardName in order) {
+      // TODO: if-branches logic here theoretically could be simplified
       if (!webCards!.containsKey(cardName)) {
         final cardCtor = _cardCtors[cardName];
         if (cardCtor != null)
@@ -224,19 +225,15 @@ class _HomeState extends State<Home> {
         // dynamically insert webCards into the list
         orderedCards.add(StatefulBuilder(
           builder: (context, setState) {
-            var currentCard = card;
+            var currentCard = cardName;
             if (webViewCardNotLoaded[currentCard] == null) {
               webViewCardNotLoaded[currentCard] = true;
             }
             return Stack(children: <Widget>[
               MeasureSize(
                 onChange: (Size size) {
-                  setNewCardHeight(card, size.height);
-                  if (size.height == webViewCardHeights[card]) {
-                    webViewCardNotLoaded[card] = false;
-                  } else {
-                    webViewCardNotLoaded[card] = true;
-                  }
+                  setNewCardHeight(cardName, size.height);
+                  webViewCardNotLoaded[cardName] = (size.height != webViewCardHeights[cardName]);
                   setState(() {});
                 },
                 child: Align(
@@ -254,7 +251,7 @@ class _HomeState extends State<Home> {
                     minHeight: webViewCardHeights[currentCard] ?? 0.0,
                     minWidth: 400.0),
                 child: Builder(builder: (BuildContext context) {
-                  final currentCard = card;
+                  final currentCard = cardName;
                   return Visibility(
                     visible: webViewCardNotLoaded[currentCard]!,
                     child: IntrinsicHeight(

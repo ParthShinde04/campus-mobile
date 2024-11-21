@@ -83,7 +83,7 @@ class CardsDataProvider extends ChangeNotifier {
       _lastUpdated = DateTime.now();
 
       if (_availableCards!.isNotEmpty) {
-        _cardOrder!.clear();
+        _cardOrder.clear();
 
         // add new cards to the top of the list
         _availableCards!
@@ -93,13 +93,13 @@ class CardsDataProvider extends ChangeNotifier {
 
               // add active webcards
               if (model.isWebCard ?? false)
-                _webCards![card] = model;
+                _webCards[card] = model;
 
-              if (!_cardOrder!.contains(model) && (model.cardActive ?? false))
-                _cardOrder!.insert(0, card);
+              if (!_cardOrder.contains(model) && (model.cardActive ?? false))
+                _cardOrder.insert(0, card);
 
               // keep all new cards activated by default
-              _cardStates!.putIfAbsent(card, () => true);
+              _cardStates.putIfAbsent(card, () => true);
             });
 
         updateCardOrder();
@@ -139,7 +139,7 @@ class CardsDataProvider extends ChangeNotifier {
 
   /// Update the [_cardOrder] stored in state
   /// overwrite the [_cardOrder] in persistent storage with the model passed in
-  Future updateCardOrder(List<String> newOrder) async {
+  Future updateCardOrder() async {
     if (_userDataProvider == null || _userDataProvider!.isInSilentLogin) {
       return;
     }
@@ -195,7 +195,7 @@ class CardsDataProvider extends ChangeNotifier {
     if (_userDataProvider == null || _userDataProvider!.isInSilentLogin) {
       return;
     }
-    var activeCards = _cardStates!.keys.where((card) => _cardStates![card]!).toList();
+    var activeCards = _cardStates.keys.where((card) => _cardStates[card]!).toList();
 
     // checks if box is open, creates one if not
     _cardStateBox = await Hive.openBox(DataPersistence.cardStates);
@@ -218,7 +218,7 @@ class CardsDataProvider extends ChangeNotifier {
     _cardOrder.insertAll(index, _studentCards.toList());
 
     // TODO: test w/o this
-    _cardOrder = List.from(_cardOrder!.toSet().toList());
+    _cardOrder = List.from(_cardOrder.toSet().toList());
 
     updateCardOrder();
     updateCardStates();
@@ -253,7 +253,7 @@ class CardsDataProvider extends ChangeNotifier {
     _cardOrder.insertAll(index, _staffCards.toList());
 
     // TODO: test w/o this
-    _cardOrder = List.from(_cardOrder!.toSet().toList());
+    _cardOrder = List.from(_cardOrder.toSet().toList());
     updateCardOrder();
     updateCardStates();
   }
@@ -285,7 +285,7 @@ class CardsDataProvider extends ChangeNotifier {
     if (_availableCards![card]!.isWebCard! && _cardStates[card]!) {
         resetCardHeight(card);
     }
-    _cardStates![card] = !_cardStates![card]!;
+    _cardStates[card] = !_cardStates[card]!;
     updateCardStates();
   }
 
