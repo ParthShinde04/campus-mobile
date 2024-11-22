@@ -29,6 +29,9 @@ class _OnboardingLoginState extends State<OnboardingLogin> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: BackButton(
+            color: Colors.white
+        ),
         elevation: 0.0,
         systemOverlayStyle: SystemUiOverlayStyle.light,
       ),
@@ -257,7 +260,7 @@ class _OnboardingLoginState extends State<OnboardingLogin> {
     Widget okButton = TextButton(
       style: TextButton.styleFrom(
         // primary: Theme.of(context).buttonColor,
-        foregroundColor: Theme.of(context).backgroundColor,
+        foregroundColor: Theme.of(context).colorScheme.background,
       ),
       child: Text("OK"),
       onPressed: () {
