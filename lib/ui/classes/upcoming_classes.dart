@@ -21,7 +21,7 @@ class UpcomingCoursesList extends StatelessWidget {
     });
     return Container(
         constraints:
-            BoxConstraints(maxHeight: MediaQuery.of(context).size.height * 0.3),
+            BoxConstraints(maxHeight: MediaQuery.of(context).size.height * 0.34),
         child: ListView(
           children: listOfCourses,
           shrinkWrap: true,
@@ -33,7 +33,7 @@ class UpcomingCoursesList extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(top: 4.0, right: 8.0),
       child: Container(
-        constraints: BoxConstraints.tightFor(height: 65),
+        constraints: BoxConstraints.tightFor(height: 64),
         decoration: createBorder(),
         child: ListTile(
           dense: true,
@@ -51,13 +51,13 @@ class UpcomingCoursesList extends StatelessWidget {
 
   BoxDecoration createBorder() {
     return BoxDecoration(
-      border: Border.all(width: 1),
+      border: Border.all(width: 1, color: Color(0xFF333333)),
     );
   }
 
   Widget buildClassTimeText(SectionData sectionData, BuildContext context) {
     return Text(
-      sectionData.days! + ' @ ' + getStartTime(sectionData.time!, context),
+      sectionData.days! + ' @ ' + getStartTime(sectionData.time!, context)
     );
   }
 

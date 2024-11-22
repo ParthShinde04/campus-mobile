@@ -30,6 +30,7 @@ class _ScanditScannerState extends State<ScanditScanner> {
         preferredSize: Size.fromHeight(42),
         child: AppBar(
           backgroundColor: ColorPrimary,
+          foregroundColor: lightTextColor,
           centerTitle: true,
           title: const Text("Scanner"),
           systemOverlayStyle: SystemUiOverlayStyle.light,
@@ -145,7 +146,7 @@ class _ScanditScannerState extends State<ScanditScanner> {
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     padding: EdgeInsets.only(left: 32.0, right: 32.0),
-                    backgroundColor: Theme.of(context).backgroundColor,
+                    backgroundColor: Theme.of(context).colorScheme.background,
                   ),
                   onPressed: () {
                     _scannerDataProvider.resetDefaultStates();

@@ -65,7 +65,7 @@ class _SpotTypesViewState extends State<SpotTypesView> {
                 data.spotKey, selectedSpots);
           },
           // activeColor: Theme.of(context).buttonColor,
-          activeColor: Theme.of(context).backgroundColor,
+          activeColor: Theme.of(context).colorScheme.background,
         ),
       ));
     }

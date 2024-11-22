@@ -21,6 +21,9 @@ class _OnboardingAffiliationsState extends State<OnboardingAffiliations> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: BackButton(
+            color: Colors.white
+        ),
         elevation: 0.0,
         systemOverlayStyle: SystemUiOverlayStyle.light,
       ),

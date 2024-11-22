@@ -3,9 +3,9 @@ import 'package:campus_mobile_experimental/core/models/cards.dart';
 import 'package:campus_mobile_experimental/core/providers/user.dart';
 import 'package:campus_mobile_experimental/core/services/cards.dart';
 import 'package:campus_mobile_experimental/ui/home/home.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
-import 'package:connectivity/connectivity.dart';
 
 class CardsDataProvider extends ChangeNotifier {
   CardsDataProvider() {
@@ -37,7 +37,6 @@ class CardsDataProvider extends ChangeNotifier {
     'availability',
     'dining',
     'events',
-    'triton_media',
     'shuttle',
     'parking',
     'news',

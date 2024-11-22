@@ -162,11 +162,6 @@ class Router {
           Provider.of<CustomAppBar>(_).changeTitle(settings.name);
           return ClassList();
         });
-      case RoutePaths.ManageParkingView:
-        return MaterialPageRoute(builder: (_) {
-          Provider.of<CustomAppBar>(_).changeTitle(settings.name);
-          return ManageParkingView();
-        });
       case RoutePaths.ParkingLotsView:
         return MaterialPageRoute(builder: (_) {
           Provider.of<CustomAppBar>(_).changeTitle(settings.name, done: true);
@@ -187,11 +182,6 @@ class Router {
         return MaterialPageRoute(builder: (_) {
           Provider.of<CustomAppBar>(_).changeTitle(settings.name, done: true);
           return NeighborhoodLotsView(data);
-        });
-      case RoutePaths.SpotTypesView:
-        return MaterialPageRoute(builder: (_) {
-          Provider.of<CustomAppBar>(_).changeTitle(settings.name);
-          return SpotTypesView();
         });
       case RoutePaths.ScanditScanner:
         return MaterialPageRoute(builder: (_) => ScanditScanner());

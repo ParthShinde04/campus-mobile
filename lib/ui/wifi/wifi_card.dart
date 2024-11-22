@@ -7,7 +7,7 @@ import 'package:campus_mobile_experimental/core/providers/speed_test.dart';
 import 'package:campus_mobile_experimental/core/providers/user.dart';
 import 'package:campus_mobile_experimental/ui/common/card_container.dart';
 import 'package:flutter/material.dart';
-import 'package:liquid_progress_indicator/liquid_progress_indicator.dart';
+import 'package:liquid_progress_indicator_v2/liquid_progress_indicator.dart';
 import 'package:provider/provider.dart';
 
 class WiFiCard extends StatefulWidget {
@@ -255,7 +255,7 @@ class _WiFiCardState extends State<WiFiCard> with AutomaticKeepAliveClientMixin 
                                   style: TextButton.styleFrom(
                                     // primary: Theme.of(context).buttonColor,
                                     foregroundColor:
-                                        Theme.of(context).backgroundColor,
+                                        Theme.of(context).colorScheme.background,
                                   ),
                                   onPressed: () {
                                     Navigator.of(context).pop();
@@ -346,7 +346,7 @@ class _WiFiCardState extends State<WiFiCard> with AutomaticKeepAliveClientMixin 
                                     style: TextButton.styleFrom(
                                       // primary: Theme.of(context).buttonColor
                                       foregroundColor:
-                                          Theme.of(context).backgroundColor,
+                                          Theme.of(context).colorScheme.background,
                                     ),
                                     onPressed: () {
                                       Navigator.of(context).pop();
@@ -460,7 +460,7 @@ class _WiFiCardState extends State<WiFiCard> with AutomaticKeepAliveClientMixin 
                                     style: TextButton.styleFrom(
                                       // primary: Theme.of(context).buttonColor,
                                       foregroundColor:
-                                          Theme.of(context).backgroundColor,
+                                          Theme.of(context).colorScheme.background,
                                     ),
                                     onPressed: () {
                                       Navigator.of(context).pop();
