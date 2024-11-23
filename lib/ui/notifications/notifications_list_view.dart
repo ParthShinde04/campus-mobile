@@ -23,9 +23,10 @@ class NotificationsListView extends StatefulWidget {
   State<NotificationsListView> createState() => _NotificationsListViewState();
 }
 
-class _NotificationsListViewState extends State<NotificationsListView> {
+class _NotificationsListViewState extends State<NotificationsListView>
+{
   @override
-  initState() {
+  void initState() {
     super.initState();
     hideListView = true;
     WidgetsBinding.instance
@@ -55,6 +56,7 @@ class _NotificationsListViewState extends State<NotificationsListView> {
   }
 
   Widget buildListView(BuildContext context) {
+    // TODO: fix this logic up
     Widget Function(BuildContext context, int index)? itemBuilder;
     int itemCount = 0;
     if (Provider.of<MessagesDataProvider>(context).messages.length == 0) {
@@ -84,7 +86,7 @@ class _NotificationsListViewState extends State<NotificationsListView> {
     );
   }
 
-  Widget _buildErrorText() {
+  static Widget _buildErrorText() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
@@ -93,7 +95,7 @@ class _NotificationsListViewState extends State<NotificationsListView> {
     );
   }
 
-  Widget _buildNoMessagesText() {
+  static Widget _buildNoMessagesText() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
@@ -135,13 +137,8 @@ class _NotificationsListViewState extends State<NotificationsListView> {
     FreeFoodDataProvider freefoodProvider =
         Provider.of<FreeFoodDataProvider>(context);
 
-    String? messageType;
-    if (data.audience.topics == null) {
-      messageType = "DM";
-    } else {
-      messageType = data.audience.topics[0];
-    }
-    return ListView(
+    String messageType = data.audience.topics?[0] ?? "DM";
+      return ListView(
       shrinkWrap: true,
       physics: NeverScrollableScrollPhysics(),
       children: <Widget>[
@@ -188,7 +185,7 @@ class _NotificationsListViewState extends State<NotificationsListView> {
     );
   }
 
-  String _readTimestamp(int timestamp) {
+  static String _readTimestamp(int timestamp) {
     var now = new DateTime.now();
     var date = new DateTime.fromMillisecondsSinceEpoch(timestamp);
     var diff = now.difference(date);

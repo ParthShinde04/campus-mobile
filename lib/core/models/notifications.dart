@@ -58,16 +58,16 @@ class MessageElement {
 
 class Audience {
   Audience({
-    required this.topics,
+    this.topics,
   });
 
-  List<String> topics;
+  List<String>? topics; // this is a direct message if it's null
 
   Audience.fromJson(Map<String, dynamic> json)
-      : topics = List<String>.from(json["topics"].map((x) => x));
+    : topics = json["topics"] != null ? List<String>.from(json["topics"].map((x) => x)) : null;
 
   Map<String, dynamic> toJson() => {
-        "topics": List<dynamic>.from(topics.map((x) => x))
+        "topics": topics != null ? List<dynamic>.from(topics!.map((x) => x)) : null
       };
 }
 

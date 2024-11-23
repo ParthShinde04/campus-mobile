@@ -210,7 +210,7 @@ class UserDataProvider extends ChangeNotifier
         _cardsDataProvider
             .updateAvailableCards(_userProfileModel.ucsdaffiliation);
 
-        _subscribeToPushNotificationTopics(userProfileModel.subscribedTopics as List<String>);
+        _subscribeToPushNotificationTopics(List<String>.from(userProfileModel.subscribedTopics!));
         _pushNotificationDataProvider
             .registerDevice(_authenticationService.data!.accessToken);
         await analytics.logEvent(name: 'loggedIn');
