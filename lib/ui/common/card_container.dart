@@ -154,21 +154,11 @@ class CardContainer extends StatelessWidget {
   }
 
   Widget buildMenu() {
-    if (hideMenu) {
+    if (hideMenu)
       return Container();
-    } else if (titleText == "Scanner") {
-      return ButtonBar(
-        buttonPadding: EdgeInsets.all(0),
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          buildMenuOptions({
-            CardMenuOptionConstants.reloadCard: reload,
-          }),
-        ],
-      );
-    }
+
     return ButtonBar(
-      buttonPadding: EdgeInsets.all(0),
+      buttonPadding: const EdgeInsets.all(0),
       mainAxisSize: MainAxisSize.min,
       children: [
         buildMenuOptions({
