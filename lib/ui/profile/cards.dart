@@ -41,7 +41,7 @@ class _CardsViewState extends State<CardsView> {
           if (newIndex > oldIndex)
             newIndex -= 1;
 
-          var order = _cardsDataProvider.cardOrder!;
+          var order = _cardsDataProvider.cardOrder;
           order.insert(newIndex, order.removeAt(oldIndex));
           setState(() { _cardsDataProvider.updateCardOrder(); });
         }
@@ -71,7 +71,7 @@ class _CardsViewState extends State<CardsView> {
 
   List<Widget> createList() {
     List<Widget> list = [];
-    for (String card in _cardsDataProvider.cardOrder!) {
+    for (String card in _cardsDataProvider.cardOrder) {
       try {
         list.add(Card(
           key: Key(card),

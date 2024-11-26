@@ -79,20 +79,20 @@ class CardsDataProvider extends ChangeNotifier {
       _availableCards = _cardsService.cardsModel;
       _lastUpdated = DateTime.now();
 
-      if (_availableCards!.isNotEmpty) {
+      if (_availableCards.isNotEmpty) {
         _cardOrder.clear();
 
         // add new cards to the top of the list
-        _availableCards!
+        _availableCards
             .forEach((card, model) {
               if (_studentCards.contains(model) || _staffCards.contains(model))
                 return;
 
               // add active webcards
-              if (model.isWebCard ?? false)
+              if (model.isWebCard)
                 _webCards[card] = model;
 
-              if (!_cardOrder.contains(model) && (model.cardActive ?? false))
+              if (!_cardOrder.contains(model) && (model.cardActive))
                 _cardOrder.insert(0, card);
 
               // keep all new cards activated by default

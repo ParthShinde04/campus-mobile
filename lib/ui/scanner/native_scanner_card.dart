@@ -17,7 +17,7 @@ class NativeScannerCard extends StatelessWidget
   @override
   Widget build(BuildContext context) {
     return CardContainer(
-      active: context.watch<CardsDataProvider>().cardStates![cardId],
+      active: context.watch<CardsDataProvider>().cardStates[cardId],
       hide: () => context.read<CardsDataProvider>().toggleCard(cardId),
       reload: () =>
           Provider.of<ScannerMessageDataProvider>(context, listen: false)
