@@ -1,3 +1,5 @@
+// ignore_for_file: unused_import
+
 import 'dart:async';
 
 import 'package:campus_mobile_experimental/app_constants.dart';
@@ -180,8 +182,8 @@ class _HomeState extends State<Home> {
 
   List<Widget> createList()
   {
-    final orderedCards = getOrderedCardsList(context.watch<CardsDataProvider>().cardOrder!);
-    final noticesCards = getNoticesCardsList(context.watch<NoticesDataProvider>().noticesModel!);
+    final orderedCards = getOrderedCardsList(context.watch<CardsDataProvider>().cardOrder);
+    final noticesCards = getNoticesCardsList(context.watch<NoticesDataProvider>().noticesModel);
     return [...noticesCards, ...orderedCards];
   }
 
@@ -214,7 +216,7 @@ class _HomeState extends State<Home> {
 
     for (String cardName in order) {
       // TODO: if-branches logic here theoretically could be simplified
-      if (!webCards!.containsKey(cardName)) {
+      if (!webCards.containsKey(cardName)) {
         final cardCtor = _cardCtors[cardName];
         if (cardCtor != null)
           orderedCards.add(cardCtor());

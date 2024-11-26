@@ -9,15 +9,12 @@ class WeatherService {
   String? _error;
   final NetworkHelper _networkHelper = NetworkHelper();
   final String endpoint = dotenv.get('WEATHER_ENDPOINT');
-  WeatherModel _weatherModel = WeatherModel();
+  late WeatherModel _weatherModel;
 
   Future<bool> fetchData() async {
     _error = null; _isLoading = true;
     try {
-      /// fetch data
       String _response = await _networkHelper.fetchData(endpoint);
-
-      /// parse data
       _weatherModel = weatherModelFromJson(_response);
       return true;
     } catch (e) {
@@ -31,6 +28,5 @@ class WeatherService {
   bool get isLoading => _isLoading;
   String? get error => _error;
   DateTime? get lastUpdated => _lastUpdated;
-  NetworkHelper get availabilityService => _networkHelper;
   WeatherModel get weatherModel => _weatherModel;
 }

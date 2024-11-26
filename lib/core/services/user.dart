@@ -5,9 +5,10 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class UserProfileService {
   UserProfileService();
-  bool? _isLoading;
+  bool _isLoading = false;
   String? _error;
-  UserProfileModel? _userProfileModel;
+  late UserProfileModel _userProfileModel;
+
   final NetworkHelper _networkHelper = NetworkHelper();
   final String _endpoint = dotenv.get('USER_ENDPOINT');
 
@@ -58,6 +59,6 @@ class UserProfileService {
   }
 
   String? get error => _error;
-  UserProfileModel? get userProfileModel => _userProfileModel;
-  bool? get isLoading => _isLoading;
+  UserProfileModel get userProfileModel => _userProfileModel;
+  bool get isLoading => _isLoading;
 }

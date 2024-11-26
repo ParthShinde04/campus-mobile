@@ -7,11 +7,15 @@ class MessageService {
   bool _isLoading = false;
   DateTime? _lastUpdated;
   String? _error;
-  Messages? _data;
+  late Messages _data;
+
   final NetworkHelper _networkHelper = NetworkHelper();
 
-  Future<bool> fetchMyMessagesData(int? timestamp, Map<String, String> authHeaders) async {
-    _error = null; _isLoading = true;
+  Future<bool> fetchMyMessagesData(
+      int timestamp, Map<String, String> authHeaders) async {
+    _error = null;
+    _isLoading = true;
+
     try {
       /// fetch data
       String _response = await _networkHelper.authorizedFetch(
@@ -29,8 +33,10 @@ class MessageService {
     }
   }
 
-  Future<bool> fetchTopicData(int? timestamp, List<String?> topics) async {
-    _error = null; _isLoading = true;
+  Future<bool> fetchTopicData(int timestamp, List<String?> topics) async {
+    _error = null;
+    _isLoading = true;
+
     String topicsEndpoint = 'topics=' + topics.join(',');
     String timestampEndpoint = '&start=' + timestamp.toString();
     try {
@@ -51,7 +57,7 @@ class MessageService {
   }
 
   String? get error => _error;
-  Messages? get messagingModels => _data;
+  Messages get messagingModels => _data;
   bool get isLoading => _isLoading;
   DateTime? get lastUpdated => _lastUpdated;
 }

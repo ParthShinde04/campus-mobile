@@ -12,9 +12,10 @@ class DiningService {
   bool _isLoading = false;
   DateTime? _lastUpdated;
   String? _error;
-  List<DiningModel>? _data;
+  List<DiningModel>? _data = [];
   DiningMenuItemsModel? _menuData;
-  final NetworkHelper _networkHelper = NetworkHelper();
+
+  static const _networkHelper = NetworkHelper();
   final Map<String, String> headers = {
     "accept": "application/json",
   };
@@ -53,8 +54,8 @@ class DiningService {
           dotenv.get('DINING_BASE_ENDPOINT') + '/menu/' + id, headers);
 
       /// parse data
-      final data = diningMenuItemsModelFromJson(_response);
-      _menuData = data;
+      _menuData = diningMenuItemsModelFromJson(_response);
+      _isLoading = false;
       return true;
     } catch (e) {
       /// if the authorized fetch failed we know we have to refresh the
@@ -74,6 +75,6 @@ class DiningService {
   bool get isLoading => _isLoading;
   String? get error => _error;
   DateTime? get lastUpdated => _lastUpdated;
-  List<DiningModel>? get data => _data;
+  List<DiningModel> get data => _data!;
   DiningMenuItemsModel? get menuData => _menuData;
 }

@@ -9,24 +9,19 @@ import 'package:hive/hive.dart';
 
 class CardsDataProvider extends ChangeNotifier {
   CardsDataProvider() {
-    // TODO: use functional method here
-    for (String card in CardTitleConstants.titleMap.keys.toList()) {
-      _cardStates[card] = true;
-    }
+    CardTitleConstants.titleMap.keys.forEach((card) => _cardStates[card] = true);
 
     /// temporary fix that prevents the student cards from causing issues on launch
     _cardOrder.removeWhere((element) => _studentCards.contains(element));
     _cardStates.removeWhere((key, value) => _studentCards.contains(key));
+
     _cardOrder.removeWhere((element) => _staffCards.contains(element));
     _cardStates.removeWhere((key, value) => _staffCards.contains(key));
   }
 
-  /// DEFAULT STATES
+  ///STATES
   bool _noInternet = false;
   bool _isLoading = false;
-  Map<String, bool> _cardStates = {};
-  Map<String, CardsModel?> _webCards = {};
-
   DateTime? _lastUpdated;
   String? _error;
 
@@ -49,21 +44,24 @@ class CardsDataProvider extends ChangeNotifier {
     'speed_test',
   ];
 
+  Map<String, bool> _cardStates = {};
+  Map<String, CardsModel> _webCards = {};
+
   // Native student cards
-  List<String> _studentCards = [
+  static const List<String> _studentCards = [
     'finals',
     'schedule',
     'student_id',
   ];
 
   // Native staff cards
-  List<String> _staffCards = [
+  static const List<String> _staffCards = [
     'MyUCSDChart',
     'staff_info',
     'employee_id',
   ];
 
-  Map<String, CardsModel>? _availableCards;
+  late Map<String, CardsModel> _availableCards;
   late Box _cardOrderBox;
   late Box _cardStateBox;
 
@@ -81,20 +79,20 @@ class CardsDataProvider extends ChangeNotifier {
       _availableCards = _cardsService.cardsModel;
       _lastUpdated = DateTime.now();
 
-      if (_availableCards!.isNotEmpty) {
+      if (_availableCards.isNotEmpty) {
         _cardOrder.clear();
 
         // add new cards to the top of the list
-        _availableCards!
+        _availableCards
             .forEach((card, model) {
               if (_studentCards.contains(model) || _staffCards.contains(model))
                 return;
 
               // add active webcards
-              if (model.isWebCard ?? false)
+              if (model.isWebCard)
                 _webCards[card] = model;
 
-              if (!_cardOrder.contains(model) && (model.cardActive ?? false))
+              if (!_cardOrder.contains(model) && (model.cardActive))
                 _cardOrder.insert(0, card);
 
               // keep all new cards activated by default
@@ -281,9 +279,8 @@ class CardsDataProvider extends ChangeNotifier {
   }
 
   void toggleCard(String card) {
-    if (_availableCards![card]!.isWebCard! && _cardStates[card]!) {
-        resetCardHeight(card);
-    }
+    if (_availableCards[card]!.isWebCard && _cardStates[card]!)
+      resetCardHeight(card);
     _cardStates[card] = !_cardStates[card]!;
     updateCardStates();
   }
@@ -291,13 +288,13 @@ class CardsDataProvider extends ChangeNotifier {
   set userDataProvider(UserDataProvider value) => _userDataProvider = value;
 
   ///SIMPLE GETTERS
-  bool? get isLoading => _isLoading;
-  bool? get noInternet => _noInternet;
+  bool get isLoading => _isLoading;
+  bool get noInternet => _noInternet;
   String? get error => _error;
   DateTime? get lastUpdated => _lastUpdated;
 
-  Map<String, bool>? get cardStates => _cardStates;
-  List<String>? get cardOrder => _cardOrder;
-  Map<String, CardsModel?>? get webCards => _webCards;
-  Map<String, CardsModel> get availableCards => _availableCards!;
+  Map<String, bool> get cardStates => _cardStates;
+  List<String> get cardOrder => _cardOrder;
+  Map<String, CardsModel?> get webCards => _webCards;
+  Map<String, CardsModel> get availableCards => _availableCards;
 }
