@@ -8,7 +8,7 @@ class NotificationService {
   bool _isLoading = false;
   DateTime? _lastUpdated;
   String? _error;
-  List<TopicsModel>? _topicsModel;
+  late List<TopicsModel> _topicsModel = [];
 
   Future<bool> fetchTopics() async {
     _error = null; _isLoading = true;
@@ -67,5 +67,5 @@ class NotificationService {
   String? get error => _error;
   bool get isLoading => _isLoading;
   DateTime? get lastUpdated => _lastUpdated;
-  List<TopicsModel>? get topicsModel => _topicsModel;
+  List<TopicsModel> get topicsModel => _topicsModel;
 }

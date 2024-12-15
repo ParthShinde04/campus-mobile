@@ -16,7 +16,7 @@ class ParkingCard extends StatefulWidget {
 class _ParkingCardState extends State<ParkingCard> {
   late ParkingDataProvider _parkingDataProvider;
   final _controller = new PageController();
-  String cardId = 'parking';
+  static const String cardId = 'parking';
 
   @override
   void didChangeDependencies() {
@@ -34,12 +34,12 @@ class _ParkingCardState extends State<ParkingCard> {
     };
     //super.build(context);
     return CardContainer(
-      titleText: CardTitleConstants.titleMap[cardId],
+      titleText: CardTitleConstants.titleMap[cardId]!,
       isLoading: _parkingDataProvider.isLoading,
       reload: () => {_parkingDataProvider.fetchParkingData()},
       errorText: _parkingDataProvider.error,
       child: () => buildParkingCard(context),
-      active: Provider.of<CardsDataProvider>(context).cardStates![cardId],
+      active: Provider.of<CardsDataProvider>(context).cardStates[cardId],
       hide: () => Provider.of<CardsDataProvider>(context, listen: false)
           .toggleCard(cardId),
       actionButtons: buildActionButtons(),
@@ -50,7 +50,7 @@ class _ParkingCardState extends State<ParkingCard> {
     try {
       List<Widget> selectedLotsViews = [];
       for (ParkingModel model in _parkingDataProvider.parkingModels) {
-        if (_parkingDataProvider.parkingViewState![model.locationName] ==
+        if (_parkingDataProvider.parkingViewState[model.locationName] ==
             true) {
           selectedLotsViews.add(CircularParkingIndicators(model: model));
         }
@@ -113,7 +113,7 @@ class _ParkingCardState extends State<ParkingCard> {
     actionButtons.add(TextButton(
       style: TextButton.styleFrom(
         // primary: Theme.of(context).buttonColor,
-        foregroundColor: Theme.of(context).backgroundColor,
+        foregroundColor: Theme.of(context).colorScheme.background,
       ),
       child: Text(
         'Manage Lots',
@@ -125,7 +125,7 @@ class _ParkingCardState extends State<ParkingCard> {
     actionButtons.add(TextButton(
       style: TextButton.styleFrom(
         // primary: Theme.of(context).buttonColor,
-        foregroundColor: Theme.of(context).backgroundColor,
+        foregroundColor: Theme.of(context).colorScheme.background,
       ),
       child: Text(
         'Manage Spots',

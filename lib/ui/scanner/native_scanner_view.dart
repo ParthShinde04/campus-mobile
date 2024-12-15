@@ -30,13 +30,13 @@ class _ScanditScannerState extends State<ScanditScanner> {
         preferredSize: Size.fromHeight(42),
         child: AppBar(
           backgroundColor: ColorPrimary,
+          foregroundColor: lightTextColor,
           centerTitle: true,
           title: const Text("Scanner"),
           systemOverlayStyle: SystemUiOverlayStyle.light,
         ),
       ),
-      body: !_scannerDataProvider.hasScanned!
-          ? renderScanner(context)
+      body: !_scannerDataProvider.hasScanned? renderScanner(context)
           : renderSubmissionView(context),
       floatingActionButton: IconButton(
         onPressed: () {},
@@ -52,11 +52,11 @@ class _ScanditScannerState extends State<ScanditScanner> {
         children: [
           Scandit(
               scanned: _scannerDataProvider.verifyBarcodeScanning,
-              onError: (e) => (_scannerDataProvider.message = e.message),
+              onError: (e) => (_scannerDataProvider.message = e.toString()),
               symbologies: [Symbology.CODE128, Symbology.DATA_MATRIX],
               onScanditCreated: (controller) =>
-                  _scannerDataProvider.controller = controller,
-              licenseKey: _scannerDataProvider.licenseKey!),
+                  _scannerDataProvider.controller = controller!,
+              licenseKey: _scannerDataProvider.licenseKey),
           Center(
             child: Container(
                 width: MediaQuery.of(context).size.width * 0.9,
@@ -66,7 +66,7 @@ class _ScanditScannerState extends State<ScanditScanner> {
                   border: Border.all(color: Colors.white),
                 )),
           ),
-          Center(child: Text(_scannerDataProvider.message!)),
+          Center(child: Text(_scannerDataProvider.message)),
         ],
       ));
     } else {
@@ -96,9 +96,9 @@ class _ScanditScannerState extends State<ScanditScanner> {
           ),
         ],
       ));
-    } else if (_scannerDataProvider.successfulSubmission!) {
+    } else if (_scannerDataProvider.successfulSubmission) {
       return (renderSuccessScreen(context));
-    } else if (_scannerDataProvider.didError!) {
+    } else if (_scannerDataProvider.didError) {
       return (renderFailureScreen(context));
     } else {
       return (renderFailureScreen(context));
@@ -114,8 +114,8 @@ class _ScanditScannerState extends State<ScanditScanner> {
             child: (Column(children: <Widget>[
               ClipOval(
                 child: Container(
-                  color: (!_scannerDataProvider.isValidBarcode! ||
-                          _scannerDataProvider.isDuplicate!)
+                  color: (!_scannerDataProvider.isValidBarcode||
+                          _scannerDataProvider.isDuplicate)
                       ? Colors.orange
                       : Colors.red,
                   height: 75,
@@ -146,10 +146,10 @@ class _ScanditScannerState extends State<ScanditScanner> {
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     padding: EdgeInsets.only(left: 32.0, right: 32.0),
-                    backgroundColor: Theme.of(context).backgroundColor,
+                    backgroundColor: Theme.of(context).colorScheme.background,
                   ),
                   onPressed: () {
-                    _scannerDataProvider.setDefaultStates();
+                    _scannerDataProvider.resetDefaultStates();
                   },
                   child: Text(
                     "Try again",
@@ -247,10 +247,10 @@ class _ScanditScannerState extends State<ScanditScanner> {
   }
 
   Text buildChartText(BuildContext context) {
-    if (_userDataProvider.userProfileModel!.classifications?.student ?? false) {
+    if (_userDataProvider.userProfileModel.classifications?.student ?? false) {
       return Text(String.fromCharCode(0x2022) +
           " You can view your results by logging in to MyStudentChart.");
-    } else if (_userDataProvider.userProfileModel!.classifications?.staff ??
+    } else if (_userDataProvider.userProfileModel.classifications?.staff ??
         false) {
       return Text(String.fromCharCode(0x2022) +
           " You can view your results by logging in to MyUCSDChart.");
@@ -261,7 +261,7 @@ class _ScanditScannerState extends State<ScanditScanner> {
   }
 
   void updateLatestScan(BuildContext context) {
-    if (_scannerDataProvider.successfulSubmission! && !hasUpdatedLatestScan) {
+    if (_scannerDataProvider.successfulSubmission&& !hasUpdatedLatestScan) {
       // to fetch the most recent scan and display timestamp to user to confirm success
       Provider.of<ScannerMessageDataProvider>(context, listen: false)
           .fetchData();

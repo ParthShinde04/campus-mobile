@@ -17,8 +17,7 @@ class _DiningMenuListState extends State<DiningMenuList> {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: Provider.of<DiningDataProvider>(context).isLoading!
-          ? CircularProgressIndicator(
+      child: Provider.of<DiningDataProvider>(context).isLoading? CircularProgressIndicator(
               color: Theme.of(context).colorScheme.secondary)
           : buildDiningMenuList(context),
     );
@@ -67,7 +66,7 @@ class _DiningMenuListState extends State<DiningMenuList> {
                     text: item.name,
                     style: TextStyle(
                       // color: Theme.of(context).buttonColor,
-                      color: Theme.of(context).backgroundColor,
+                      color: Theme.of(context).colorScheme.background,
                       fontSize: 18,
                     ),
                   ),
@@ -135,7 +134,7 @@ class _DiningMenuListState extends State<DiningMenuList> {
         textStyle: TextStyle(fontSize: 18),
         selectedColor: Theme.of(context).textTheme.labelLarge!.color,
         // fillColor: Theme.of(context).buttonColor,
-        fillColor: Theme.of(context).backgroundColor,
+        fillColor: Theme.of(context).colorScheme.background,
         borderRadius: BorderRadius.circular(10),
         constraints: BoxConstraints.expand(
             width: (MediaQuery.of(context).size.width - 40) * .33, height: 38),
@@ -192,17 +191,18 @@ class _DiningMenuListState extends State<DiningMenuList> {
   }
 }
 
-class LabeledRadio extends StatelessWidget {
-  final String? title;
+class LabeledRadio extends StatelessWidget
+{
+  final String title;
   final Meal value;
-  final Meal? groupValue;
+  final Meal groupValue;
   final void Function(Meal?)? onChanged;
 
   const LabeledRadio(
       {Key? key,
-      this.title,
+      required this.title,
       required this.value,
-      this.groupValue,
+      required this.groupValue,
       this.onChanged})
       : super(key: key);
 
@@ -217,11 +217,11 @@ class LabeledRadio extends StatelessWidget {
             groupValue: groupValue,
             onChanged: onChanged,
             // activeColor: Theme.of(context).buttonColor,
-            activeColor: Theme.of(context).backgroundColor,
+            activeColor: Theme.of(context).colorScheme.background,
           ),
           Container(
             child: Text(
-              title!,
+              title,
               style: TextStyle(fontSize: 16),
             ),
           ),

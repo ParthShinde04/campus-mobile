@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 import 'package:provider/provider.dart';
 
+import 'neighborhood_lot_view.dart';
+
 class CircularParkingIndicators extends StatelessWidget {
   const CircularParkingIndicators({
     Key? key,
@@ -18,7 +20,7 @@ class CircularParkingIndicators extends StatelessWidget {
     return Column(
       children: [
         buildLocationTitle(),
-        buildLocationContext(context),
+        buildLocationContext(),
         buildSpotsAvailableText(context),
         buildHistoricInfo(),
         buildAllParkingAvailability(context),
@@ -32,19 +34,16 @@ class CircularParkingIndicators extends StatelessWidget {
     List<String> selectedSpots = [];
 
     Provider.of<ParkingDataProvider>(context)
-        .spotTypesState!
-        .forEach((key, value) {
+        .spotTypesState.forEach((key, value) {
       if (value && selectedSpots.length < 4) {
-        selectedSpots.add(key!);
+        selectedSpots.add(key);
       }
     });
     for (String spot in selectedSpots) {
-      if (model.availability != null) {
-        listOfCircularParkingInfo.add(buildCircularParkingInfo(
-            Provider.of<ParkingDataProvider>(context).spotTypeMap![spot],
-            model.availability![spot],
-            context));
-      }
+      listOfCircularParkingInfo.add(buildCircularParkingInfo(
+          Provider.of<ParkingDataProvider>(context).spotTypeMap[spot],
+          model.availability[spot],
+          context));
     }
     return Expanded(
       child: Row(
@@ -112,17 +111,17 @@ class CircularParkingIndicators extends StatelessWidget {
                   padding: EdgeInsets.all(8.0),
                   child: spotType != null
                       ? CircleAvatar(
-                          backgroundColor: colorFromHex(spotType.color!),
-                          child: spotType.text!.contains("&#x267f;")
+                          backgroundColor: colorFromHex(spotType.color),
+                          child: spotType.text.contains("&#x267f;")
                               ? Icon(
                                   Icons.accessible,
                                   size: 25.0,
-                                  color: colorFromHex(spotType.textColor!),
+                                  color: colorFromHex(spotType.textColor),
                                 )
                               : Text(
-                                  spotType.text!,
+                                  spotType.text,
                                   style: TextStyle(
-                                    color: colorFromHex(spotType.textColor!),
+                                    color: colorFromHex(spotType.textColor),
                                   ),
                                 ),
                         )
@@ -161,15 +160,15 @@ class CircularParkingIndicators extends StatelessWidget {
                   padding: EdgeInsets.all(8.0),
                   child: spotType != null
                       ? CircleAvatar(
-                          backgroundColor: colorFromHex(spotType.color!),
-                          child: spotType.text!.contains("&#x267f;")
+                          backgroundColor: colorFromHex(spotType.color),
+                          child: spotType.text.contains("&#x267f;")
                               ? Icon(Icons.accessible,
                                   size: 25.0,
-                                  color: colorFromHex(spotType.textColor!))
+                                  color: colorFromHex(spotType.textColor))
                               : Text(
-                                  spotType.text!,
+                                  spotType.text,
                                   style: TextStyle(
-                                    color: colorFromHex(spotType.textColor!),
+                                    color: colorFromHex(spotType.textColor),
                                   ),
                                 ),
                         )
@@ -180,16 +179,7 @@ class CircularParkingIndicators extends StatelessWidget {
           );
   }
 
-  Color colorFromHex(String hexColor) {
-    final hexCode = hexColor.replaceAll('#', '');
-    if (hexColor.length == 6) {
-      hexColor =
-          'FF' + hexColor; // FF as the opacity value if you don't add it.
-    }
-    return Color(int.parse('FF$hexCode', radix: 16));
-  }
-
-  Color getColor(double value) {
+  static Color getColor(double value) {
     if (value > .75) {
       return Colors.green;
     }
@@ -199,9 +189,9 @@ class CircularParkingIndicators extends StatelessWidget {
     return Colors.red;
   }
 
-  Widget buildLocationContext(BuildContext context) {
+  Widget buildLocationContext() {
     return Center(
-      child: Text(model.locationContext ?? "",
+      child: Text(model.locationContext,
           style: TextStyle(
             color: Colors.grey,
           )),
@@ -210,7 +200,7 @@ class CircularParkingIndicators extends StatelessWidget {
 
   Widget buildLocationTitle() {
     return Text(
-      model.locationName ?? "",
+      model.locationName,
       style: TextStyle(
         fontWeight: FontWeight.bold,
         fontSize: 20,

@@ -38,7 +38,7 @@ class MoreResultsList extends StatelessWidget {
                         title: Text(
                           Provider.of<MapsDataProvider>(cntxt, listen: false)
                               .mapSearchModels[index]
-                              .title!,
+                              .title,
                         ),
                         trailing: Text(
                           Provider.of<MapsDataProvider>(cntxt, listen: false)
@@ -69,7 +69,7 @@ class MoreResultsList extends StatelessWidget {
         },
         style: ElevatedButton.styleFrom(
           // primary: Theme.of(context).buttonColor,
-          backgroundColor: Theme.of(context).backgroundColor,
+          backgroundColor: Theme.of(context).colorScheme.background,
         ),
         child: Text(
           'Show More Results',

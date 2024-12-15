@@ -29,12 +29,12 @@ class _AvailabilityCardState extends State<AvailabilityCard> {
   @override
   Widget build(BuildContext context) {
     return CardContainer(
-      active: Provider.of<CardsDataProvider>(context).cardStates![cardId],
+      active: Provider.of<CardsDataProvider>(context).cardStates[cardId],
       hide: () => Provider.of<CardsDataProvider>(context, listen: false)
           .toggleCard(cardId),
       reload: () => _availabilityDataProvider.fetchAvailability(),
       isLoading: _availabilityDataProvider.isLoading,
-      titleText: CardTitleConstants.titleMap[cardId],
+      titleText: CardTitleConstants.titleMap[cardId]!,
       errorText: _availabilityDataProvider.error,
       child: () =>
           buildAvailabilityCard(_availabilityDataProvider.availabilityModels),
@@ -43,24 +43,24 @@ class _AvailabilityCardState extends State<AvailabilityCard> {
   }
 
   Widget buildAvailabilityCard(List<AvailabilityModel?> data) {
-    // RegExp multiPager = RegExp(r' \(\d+/\d+\)$');
-    // Filter the models and create a list of only the valid ones
-    List<Widget> locationsList = data
-        .where((model) {
-      if (model == null) return false;
-      String curName = model.name!;
-      RegExp multiPager = RegExp(r' \(\d+/\d+\)$');
-      RegExpMatch? match = multiPager.firstMatch(curName);
-      if (match != null) {
-        curName = curName.replaceRange(match.start, match.end, '');
+    List<Widget> locationsList = [];
+    RegExp multiPager = RegExp(r' \(\d+/\d+\)$');
+    // loop through all the models, adding each one to locationsList
+    for (AvailabilityModel? model in data) {
+      if (model != null) {
+        String curName = model.name;
+        RegExpMatch? match = multiPager.firstMatch(curName);
+        if (match != null) {
+          curName = curName.replaceRange(match.start, match.end, '');
+        }
+        if (_availabilityDataProvider.locationViewState[curName]!) {
+          locationsList.add(AvailabilityDisplay(model: model));
+        }
       }
-      return _availabilityDataProvider.locationViewState[curName]!;
-    })
-        .map((model) => AvailabilityDisplay(model: model!))
-        .toList();
+    }
 
-    // If no location is available, show "No Location to Display"
-    if (locationsList.isEmpty) {
+    // the user chose no location, so instead show "No Location to Display"
+    if (locationsList.length == 0) {
       return Column(
         mainAxisAlignment: MainAxisAlignment.center,
         mainAxisSize: MainAxisSize.min,
@@ -85,12 +85,9 @@ class _AvailabilityCardState extends State<AvailabilityCard> {
     return Column(
       children: <Widget>[
         Flexible(
-          child: PageView.builder(
+          child: PageView(
             controller: _controller,
-            itemCount: locationsList.length,
-            itemBuilder: (context, index) {
-              return locationsList[index];
-            },
+            children: locationsList,
           ),
         ),
         SingleChildScrollView(
@@ -113,7 +110,7 @@ class _AvailabilityCardState extends State<AvailabilityCard> {
     actionButtons.add(TextButton(
       style: TextButton.styleFrom(
         // primary: Theme.of(context).buttonColor,
-        foregroundColor: Theme.of(context).backgroundColor,
+        foregroundColor: Theme.of(context).colorScheme.background,
       ),
       child: Text(
         'Manage Locations',

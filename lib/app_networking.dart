@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'dart:ffi';
+
 import 'package:campus_mobile_experimental/app_constants.dart';
 import 'package:campus_mobile_experimental/app_styles.dart';
 import 'package:dio/dio.dart';
@@ -55,7 +55,7 @@ class NetworkHelper {
     }
   }
 
-  Widget getSilentLoginDialog() {
+  static Widget getSilentLoginDialog() {
     return AlertDialog(
       title: const Text(LoginConstants.silentLoginFailedTitle),
       content: Text(LoginConstants.silentLoginFailedDesc),

@@ -29,13 +29,13 @@ class _ShuttleCardState extends State<ShuttleCard> {
 
   Widget build(BuildContext context) {
     return CardContainer(
-      active: Provider.of<CardsDataProvider>(context).cardStates![cardId],
+      active: Provider.of<CardsDataProvider>(context).cardStates[cardId],
       hide: () => Provider.of<CardsDataProvider>(context, listen: false)
           .toggleCard(cardId),
       reload: () => Provider.of<ShuttleDataProvider>(context, listen: false)
           .fetchStops(true),
       isLoading: _shuttleCardDataProvider.isLoading,
-      titleText: CardTitleConstants.titleMap[cardId],
+      titleText: CardTitleConstants.titleMap[cardId]!,
       errorText: _shuttleCardDataProvider.error,
       child: () => buildShuttleCard(_shuttleCardDataProvider.stopsToRender,
           _shuttleCardDataProvider.arrivalsToRender),
@@ -43,62 +43,84 @@ class _ShuttleCardState extends State<ShuttleCard> {
     );
   }
 
-  Widget buildShuttleCard(List<ShuttleStopModel?> stopsToRender,
-      Map<int?, List<ArrivingShuttle>>? arrivalsToRender) {
+  Widget buildShuttleCard(List<ShuttleStopModel> stopsToRender,
+      Map<int, List<ArrivingShuttle>> arrivalsToRender) {
     print("Stops - ${stopsToRender.length}");
-    print("Arrivals - ${arrivalsToRender?.length}");
+    print("Arrivals - ${arrivalsToRender.length}");
 
-    // Handle the case where there are no stops to display
-    if (stopsToRender.isEmpty) {
-      return Center(child: Text('No shuttles found. Please add a stop.'));
-    }
+    List<Widget> renderList = [];
+    try {
+      if (_shuttleCardDataProvider.closestStop != null) {
+        print("CLOSEST STOP");
+        print(_shuttleCardDataProvider.closestStop!.name);
 
-    // Lazy loading by using PageView.builder
-    return Column(
-      children: <Widget>[
-        Flexible(
-          child: PageView.builder(
+        renderList.add(ShuttleDisplay(
+            stop: _shuttleCardDataProvider.closestStop!,
+            arrivingShuttles:
+                arrivalsToRender[_shuttleCardDataProvider.closestStop!.id]));
+      }
+
+      for (int i = 0; i < _shuttleCardDataProvider.stopsToRender.length; i++) {
+        renderList.add(ShuttleDisplay(
+            stop: _shuttleCardDataProvider.stopsToRender[i],
+            arrivingShuttles: arrivalsToRender[
+                _shuttleCardDataProvider.stopsToRender[i].id]));
+      }
+
+      // Initialize first shuttle display with arrival information
+      if (renderList.isEmpty) {
+        // if (stopsToRender.isEmpty) {
+        return Padding(
+          padding: const EdgeInsets.only(bottom: 42.0),
+          child: Center(child: Text('No shuttles found. Please add a stop.')),
+        );
+      }
+
+      return Column(
+        children: <Widget>[
+          Flexible(
+            child: PageView(
+              controller: _controller,
+              children: renderList,
+              onPageChanged: (index) async {
+                // print(index);
+              },
+            ),
+          ),
+          DotsIndicator(
             controller: _controller,
-            itemCount: stopsToRender.length,
-            itemBuilder: (context, index) {
-              final stop = stopsToRender[index];
-              final arrivingShuttles = arrivalsToRender?[stop?.id];
-
-              return ShuttleDisplay(
-                stop: stop,
-                arrivingShuttles: arrivingShuttles,
-              );
+            itemCount: renderList.length,
+            onPageSelected: (int index) {
+              _controller.animateToPage(index,
+                  duration: Duration(seconds: 1), curve: Curves.ease);
             },
-            onPageChanged: (index) {
-              // Optional: Handle page change if needed
-            },
+          )
+        ],
+      );
+    } catch (e) {
+      return Container(
+        width: double.infinity,
+        child: Center(
+          child: Container(
+            child: Text('An error occurred, please try again.' + e.toString()),
           ),
         ),
-        DotsIndicator(
-          controller: _controller,
-          itemCount: stopsToRender.length,
-          onPageSelected: (int index) {
-            _controller.animateToPage(index,
-                duration: Duration(seconds: 1), curve: Curves.ease);
-          },
-        ),
-      ],
-    );
+      );
+    }
   }
-
 
   List<Widget> buildActionButtons() {
     List<Widget> actionButtons = [];
     actionButtons.add(TextButton(
       style: TextButton.styleFrom(
         // primary: Theme.of(context).buttonColor,
-        foregroundColor: Theme.of(context).backgroundColor,
+        foregroundColor: Theme.of(context).colorScheme.background,
       ),
       child: Text(
         'Manage Shuttle Stops',
       ),
       onPressed: () {
-        if (!_shuttleCardDataProvider.isLoading!) {
+        if (!_shuttleCardDataProvider.isLoading) {
           Navigator.pushNamed(context, RoutePaths.ManageShuttleView);
         }
       },

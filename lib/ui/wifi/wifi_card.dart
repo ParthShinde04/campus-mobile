@@ -6,7 +6,7 @@ import 'package:campus_mobile_experimental/core/providers/cards.dart';
 import 'package:campus_mobile_experimental/core/providers/speed_test.dart';
 import 'package:campus_mobile_experimental/ui/common/card_container.dart';
 import 'package:flutter/material.dart';
-import 'package:liquid_progress_indicator/liquid_progress_indicator.dart';
+import 'package:liquid_progress_indicator_v2/liquid_progress_indicator.dart';
 import 'package:provider/provider.dart';
 
 class WiFiCard extends StatefulWidget {
@@ -43,14 +43,14 @@ class _WiFiCardState extends State<WiFiCard> with AutomaticKeepAliveClientMixin 
   Widget build(BuildContext context) {
     super.build(context);
     return CardContainer(
-      active: Provider.of<CardsDataProvider>(context).cardStates![cardId],
+      active: Provider.of<CardsDataProvider>(context).cardStates[cardId],
       hide: () => Provider.of<CardsDataProvider>(context, listen: false)
           .toggleCard(cardId),
       reload: () => cardState != TestStatus.running
           ? Provider.of<SpeedTestProvider>(context, listen: false).init()
           : print("running test..."),
-      isLoading: _speedTestProvider.isLoading,
-      titleText: CardTitleConstants.titleMap[cardId],
+      isLoading: _speedTestProvider.isLoading!,
+      titleText: CardTitleConstants.titleMap[cardId]!,
       errorText: _speedTestProvider.error,
       child: () => buildCardContent(context),
     );
@@ -253,7 +253,7 @@ class _WiFiCardState extends State<WiFiCard> with AutomaticKeepAliveClientMixin 
                                   style: TextButton.styleFrom(
                                     // primary: Theme.of(context).buttonColor,
                                     foregroundColor:
-                                        Theme.of(context).backgroundColor,
+                                        Theme.of(context).colorScheme.background,
                                   ),
                                   onPressed: () {
                                     Navigator.of(context).pop();
@@ -344,7 +344,7 @@ class _WiFiCardState extends State<WiFiCard> with AutomaticKeepAliveClientMixin 
                                     style: TextButton.styleFrom(
                                       // primary: Theme.of(context).buttonColor
                                       foregroundColor:
-                                          Theme.of(context).backgroundColor,
+                                          Theme.of(context).colorScheme.background,
                                     ),
                                     onPressed: () {
                                       Navigator.of(context).pop();
@@ -458,7 +458,7 @@ class _WiFiCardState extends State<WiFiCard> with AutomaticKeepAliveClientMixin 
                                     style: TextButton.styleFrom(
                                       // primary: Theme.of(context).buttonColor,
                                       foregroundColor:
-                                          Theme.of(context).backgroundColor,
+                                          Theme.of(context).colorScheme.background,
                                     ),
                                     onPressed: () {
                                       Navigator.of(context).pop();

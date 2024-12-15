@@ -6,15 +6,16 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 
-class EventTile extends StatelessWidget {
+class EventTile extends StatelessWidget
+{
   const EventTile({Key? key, required this.data}) : super(key: key);
+
   final EventModel data;
   final double tileWidth = 190;
 
   @override
   Widget build(BuildContext context) {
-    return Provider.of<EventsDataProvider>(context).isLoading!
-        ? Center(
+    return Provider.of<EventsDataProvider>(context).isLoading? Center(
             child: CircularProgressIndicator(
                 color: Theme.of(context).colorScheme.secondary))
         : buildEventTile(context);
@@ -49,7 +50,7 @@ class EventTile extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          data.title!,
+                          data.title,
                           textAlign: TextAlign.center,
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
@@ -104,11 +105,11 @@ class EventTile extends StatelessWidget {
     try {
       // Separate dates from times
       String startMonthDayYear =
-          DateFormat.yMMMMd('en_US').format(data.startDate!.toLocal());
+          DateFormat.yMMMMd('en_US').format(data.startDate.toLocal());
       String endMonthDayYear =
-          DateFormat.yMMMMd('en_US').format(data.endDate!.toLocal());
-      String startTime = DateFormat.jm().format(data.startDate!.toLocal());
-      String endTime = DateFormat.jm().format(data.endDate!.toLocal());
+          DateFormat.yMMMMd('en_US').format(data.endDate.toLocal());
+      String startTime = DateFormat.jm().format(data.startDate.toLocal());
+      String endTime = DateFormat.jm().format(data.endDate.toLocal());
 
       // Mark any special types of events
       bool sameDay = (startMonthDayYear == endMonthDayYear);

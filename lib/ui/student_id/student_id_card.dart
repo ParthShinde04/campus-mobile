@@ -1,5 +1,4 @@
 import 'package:barcode_widget/barcode_widget.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:campus_mobile_experimental/app_constants.dart';
 import 'package:campus_mobile_experimental/app_styles.dart';
 import 'package:campus_mobile_experimental/core/models/student_id_name.dart';
@@ -12,8 +11,13 @@ import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class StudentIdCard extends StatelessWidget {
-  final String cardId = "student_id";
+class StudentIdCard extends StatefulWidget {
+  @override
+  _StudentIdCardState createState() => _StudentIdCardState();
+}
+
+class _StudentIdCardState extends State<StudentIdCard> {
+  String cardId = "student_id";
 
   /// Pop up barcode
   createAlertDialog(
@@ -57,13 +61,13 @@ class StudentIdCard extends StatelessWidget {
     ScalingUtility().getCurrentMeasurements(context);
 
     return CardContainer(
-      active: Provider.of<CardsDataProvider>(context).cardStates![cardId],
+      active: Provider.of<CardsDataProvider>(context).cardStates[cardId],
       hide: () => Provider.of<CardsDataProvider>(context, listen: false)
           .toggleCard(cardId),
       reload: () => Provider.of<StudentIdDataProvider>(context, listen: false)
           .fetchData(),
       isLoading: Provider.of<StudentIdDataProvider>(context).isLoading,
-      titleText: CardTitleConstants.titleMap[cardId],
+      titleText: CardTitleConstants.titleMap[cardId]!,
       errorText: Provider.of<StudentIdDataProvider>(context).error,
       child: () => buildCardContent(
           Provider.of<StudentIdDataProvider>(context).studentIdNameModel,
@@ -84,9 +88,9 @@ class StudentIdCard extends StatelessWidget {
   }
 
   Widget buildCardContent(
-      StudentIdNameModel? nameModel,
-      StudentIdPhotoModel? photoModel,
-      StudentIdProfileModel? profileModel,
+      StudentIdNameModel nameModel,
+      StudentIdPhotoModel photoModel,
+      StudentIdProfileModel profileModel,
       BuildContext context) {
     try {
       if (MediaQuery.of(context).size.width < 600) {
@@ -102,19 +106,10 @@ class StudentIdCard extends StatelessWidget {
                             left: cardMargin * 1.5, right: cardMargin * 1.5)),
                     Column(
                       children: <Widget>[
-                        CachedNetworkImage(
-                          imageUrl: photoModel!.photoUrl!,
+                        Image.network(
+                          photoModel.photoUrl,
                           fit: BoxFit.contain,
                           height: ScalingUtility.verticalSafeBlock * 14,
-                          progressIndicatorBuilder: (context, url, downloadProgress) {
-                            return Center(
-                              child: CircularProgressIndicator(
-                                color: Theme.of(context).colorScheme.secondary,
-                                value: downloadProgress.progress,
-                              ),
-                            );
-                          },
-                          errorWidget: (context, url, error) => Icon(Icons.error),
                         ),
                         SizedBox(
                           height: ScalingUtility.verticalSafeBlock * 1.5,
@@ -133,15 +128,11 @@ class StudentIdCard extends StatelessWidget {
                                     cardMargin),
                             child: FittedBox(
                               child: Text(
-                                (nameModel!.firstName! +
-                                    " " +
-                                    nameModel.lastName!),
+                                '${nameModel.firstName} ${nameModel.lastName}',
                                 style: TextStyle(
                                     fontWeight: FontWeight.bold,
                                     fontSize: getFontSize(
-                                        nameModel.firstName! +
-                                            " " +
-                                            nameModel.lastName!,
+                                        '${nameModel.firstName} ${nameModel.lastName}',
                                         "name")),
                                 textAlign: TextAlign.left,
                                 softWrap: true,
@@ -156,11 +147,11 @@ class StudentIdCard extends StatelessWidget {
                                 right: ScalingUtility.horizontalSafeBlock *
                                     cardMargin),
                             child: Text(
-                              profileModel!.collegeCurrent!,
+                              profileModel.collegeCurrent,
                               style: TextStyle(
                                   color: Colors.grey,
                                   fontSize: getFontSize(
-                                      profileModel.collegeCurrent!, "college")),
+                                      profileModel.collegeCurrent, "college")),
                               textAlign: TextAlign.left,
                               softWrap: false,
                               maxLines: 1,
@@ -175,14 +166,14 @@ class StudentIdCard extends StatelessWidget {
                             child: Text(
                               profileModel.graduatePrimaryMajorCurrent != ""
                                   ? profileModel.graduatePrimaryMajorCurrent
-                                  : profileModel.ugPrimaryMajorCurrent!,
+                                  : profileModel.ugPrimaryMajorCurrent,
                               style: TextStyle(
                                   fontSize: getFontSize(
                                       profileModel.graduatePrimaryMajorCurrent !=
-                                              ""
+                                          ""
                                           ? profileModel
-                                              .graduatePrimaryMajorCurrent
-                                          : profileModel.ugPrimaryMajorCurrent!,
+                                          .graduatePrimaryMajorCurrent
+                                          : profileModel.ugPrimaryMajorCurrent,
                                       "major")),
                               textAlign: TextAlign.left,
                               softWrap: false,
@@ -222,9 +213,9 @@ class StudentIdCard extends StatelessWidget {
                     child: Padding(
                       padding: EdgeInsets.only(
                           left:
-                              ScalingUtility.horizontalSafeBlock * cardMargin),
+                          ScalingUtility.horizontalSafeBlock * cardMargin),
                       child: Text(
-                        profileModel.classificationType!,
+                        profileModel.classificationType,
                         style: TextStyle(
                             fontSize: ScalingUtility.horizontalSafeBlock * 3.5),
                       ),
@@ -235,14 +226,14 @@ class StudentIdCard extends StatelessWidget {
                       Padding(
                         padding: EdgeInsets.only(
                             left:
-                                (ScalingUtility.horizontalSafeBlock * 11.225) +
-                                    realignText(Theme.of(context))),
+                            (ScalingUtility.horizontalSafeBlock * 11.225) +
+                                realignText(Theme.of(context))),
                         child: Text(
                           profileModel.barcode.toString(),
                           style: TextStyle(
                               fontSize: ScalingUtility.horizontalSafeBlock * 3,
                               letterSpacing:
-                                  ScalingUtility.horizontalSafeBlock * 1.5),
+                              ScalingUtility.horizontalSafeBlock * 1.5),
                         ),
                       ),
                     ],
@@ -260,22 +251,13 @@ class StudentIdCard extends StatelessWidget {
           Container(
             child: Column(
               children: <Widget>[
-                CachedNetworkImage(
-                  imageUrl: photoModel!.photoUrl!,
+                Image.network(
+                  photoModel.photoUrl,
                   fit: BoxFit.contain,
                   height: 125,
-                  progressIndicatorBuilder: (context, url, downloadProgress) {
-                    return Center(
-                      child: CircularProgressIndicator(
-                        color: Theme.of(context).colorScheme.secondary,
-                        value: downloadProgress.progress,
-                      ),
-                    );
-                  },
-                  errorWidget: (context, url, error) => Icon(Icons.error),
                 ),
                 SizedBox(height: 10),
-                Text(profileModel!.classificationType!),
+                Text(profileModel.classificationType),
               ],
             ),
             padding: EdgeInsets.only(
@@ -290,11 +272,11 @@ class StudentIdCard extends StatelessWidget {
                   Container(
                     padding: new EdgeInsets.only(right: cardMargin),
                     child: Text(
-                      (nameModel!.firstName! + " " + nameModel.lastName!),
+                      '${nameModel.firstName} ${nameModel.lastName}',
                       style: TextStyle(
                           fontWeight: FontWeight.bold,
-                          fontSize: tabletFontSize(context,
-                              nameModel.firstName! + " " + nameModel.lastName!,
+                          fontSize: tabletFontSize(
+                              '${nameModel.firstName} ${nameModel.lastName}',
                               "name")),
                       textAlign: TextAlign.left,
                       softWrap: false,
@@ -305,12 +287,12 @@ class StudentIdCard extends StatelessWidget {
                   Container(
                     padding: new EdgeInsets.only(right: cardMargin),
                     child: Text(
-                      profileModel.collegeCurrent!,
+                      profileModel.collegeCurrent,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
                           color: Colors.grey,
-                          fontSize: tabletFontSize(context,
-                              profileModel.collegeCurrent!, "college")),
+                          fontSize: tabletFontSize(
+                              profileModel.collegeCurrent, "college")),
                       textAlign: TextAlign.left,
                       softWrap: false,
                       maxLines: 1,
@@ -322,12 +304,12 @@ class StudentIdCard extends StatelessWidget {
                     child: Text(
                       profileModel.graduatePrimaryMajorCurrent != ""
                           ? profileModel.graduatePrimaryMajorCurrent
-                          : profileModel.ugPrimaryMajorCurrent!,
+                          : profileModel.ugPrimaryMajorCurrent,
                       style: TextStyle(
-                          fontSize: tabletFontSize(context,
+                          fontSize: tabletFontSize(
                               profileModel.graduatePrimaryMajorCurrent != ""
                                   ? profileModel.graduatePrimaryMajorCurrent
-                                  : profileModel.ugPrimaryMajorCurrent!,
+                                  : profileModel.ugPrimaryMajorCurrent,
                               "major")),
                       textAlign: TextAlign.left,
                       softWrap: false,
@@ -431,8 +413,8 @@ class StudentIdCard extends StatelessWidget {
                         cardNumber,
                         style: TextStyle(
                             color: Colors.black,
-                            fontSize: fontSizeForTablet(context),
-                            letterSpacing: letterSpacingForTablet(context)),
+                            fontSize: fontSizeForTablet(),
+                            letterSpacing: letterSpacingForTablet()),
                       )
                     ],
                   ),
@@ -460,14 +442,14 @@ class StudentIdCard extends StatelessWidget {
     }
   }
 
-  double letterSpacingForTablet(BuildContext context) {
+  double letterSpacingForTablet() {
     if (MediaQuery.of(context).orientation == Orientation.landscape) {
       return ScalingUtility.horizontalSafeBlock * 1;
     }
     return ScalingUtility.horizontalSafeBlock * 3;
   }
 
-  double fontSizeForTablet(BuildContext context) {
+  double fontSizeForTablet() {
     if (MediaQuery.of(context).orientation == Orientation.landscape) {
       return ScalingUtility.horizontalSafeBlock * 2;
     }
@@ -527,8 +509,8 @@ class StudentIdCard extends StatelessWidget {
                         cardNumber,
                         style: TextStyle(
                             color: Colors.black,
-                            fontSize: getRotatedPopUpFontSize(context),
-                            letterSpacing: letterSpacing(context)),
+                            fontSize: getRotatedPopUpFontSize(),
+                            letterSpacing: letterSpacing()),
                       )
                     ],
                   ),
@@ -562,12 +544,12 @@ class StudentIdCard extends StatelessWidget {
     }
   }
 
-  double letterSpacing(BuildContext context) =>
+  double letterSpacing() =>
       MediaQuery.of(context).orientation == Orientation.landscape
           ? SizeConfig.safeBlockHorizontal * 1
           : SizeConfig.safeBlockHorizontal * 3;
 
-  double getRotatedPopUpFontSize(BuildContext context) =>
+  double getRotatedPopUpFontSize() =>
       MediaQuery.of(context).orientation == Orientation.landscape
           ? SizeConfig.safeBlockHorizontal * 2
           : SizeConfig.safeBlockHorizontal * 4;
@@ -591,9 +573,9 @@ class StudentIdCard extends StatelessWidget {
     return base;
   }
 
-  double tabletFontSize(BuildContext context, String input, String textField) {
+  double tabletFontSize(String input, String textField) {
     /// Base font size
-    double base = letterSpacingForTablet(context);
+    double base = letterSpacingForTablet();
 
     /// If threshold is passed, shrink text
     if (input.length >= 21) {

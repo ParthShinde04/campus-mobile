@@ -24,7 +24,7 @@ class _LoginState extends State<Login> {
 
   @override
   Widget build(BuildContext context) {
-    if (!_userDataProvider.isLoading!) {
+    if (!_userDataProvider.isLoading) {
       if (_userDataProvider.isLoggedIn) {
         return buildLoggedInWidget(context);
       } else {
@@ -66,7 +66,7 @@ class _LoginState extends State<Login> {
   /// trailing characters and capitaliation, which can lead to usernames
   /// displaying very weirdly in our app (e.g., mixed capitalizatio and random
   /// trailing characters if input in that manner))
-  String parseUsername (String username) {
+  static String parseUsername (String username) {
     username = username.toLowerCase();
     RegExpMatch? match = RegExp(r'ucsd.edu').firstMatch(username);
     if (match != null) {
@@ -83,15 +83,15 @@ class _LoginState extends State<Login> {
         color: Colors.green,
       ),
       title: Text(
-        _userDataProvider.userProfileModel!.username != null
-            ? parseUsername(_userDataProvider.userProfileModel!.username!)
+        _userDataProvider.userProfileModel.username != null
+            ? parseUsername(_userDataProvider.userProfileModel.username!)
             : "",
         style: TextStyle(fontSize: 17),
       ),
       trailing: OutlinedButton(
         style: OutlinedButton.styleFrom(
           // primary: Theme.of(context).buttonColor,
-          foregroundColor: Theme.of(context).backgroundColor,
+          foregroundColor: Theme.of(context).colorScheme.background,
         ),
         child: Text('Log out'),
         onPressed: () => executeLogout(),
@@ -147,7 +147,8 @@ class _LoginState extends State<Login> {
                   icon: Icon(
                     // Based on passwordObscured state choose the icon
                     _passwordObscured ? Icons.visibility_off : Icons.visibility,
-                    color: Theme.of(context).primaryColorDark,
+                    /// TODO: Change color to improve its visibility in dark theme.
+                    color: Color(0xFF8B8B8B) // Theme.of(context).primaryColorDark,
                   ),
                   onPressed: () => _toggle(),
                 ),
@@ -171,7 +172,7 @@ class _LoginState extends State<Login> {
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       // primary: Theme.of(context).buttonColor,
-                      backgroundColor: Theme.of(context).backgroundColor,
+                      backgroundColor: Theme.of(context).colorScheme.background,
                     ),
                     child: Text(
                       'Sign In',
@@ -179,7 +180,7 @@ class _LoginState extends State<Login> {
                           fontSize: 18,
                           color: Theme.of(context).textTheme.labelLarge!.color),
                     ),
-                    onPressed: _userDataProvider.isLoading!
+                    onPressed: _userDataProvider.isLoading
                         ? null
                         : () {
                             _userDataProvider
@@ -234,7 +235,7 @@ class _LoginState extends State<Login> {
     Widget okButton = TextButton(
       style: TextButton.styleFrom(
         // primary: Theme.of(context).buttonColor,
-        foregroundColor: Theme.of(context).backgroundColor,
+        foregroundColor: Theme.of(context).colorScheme.background,
       ),
       child: Text("OK"),
       onPressed: () {

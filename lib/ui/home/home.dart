@@ -1,3 +1,5 @@
+// ignore_for_file: unused_import
+
 import 'dart:async';
 
 import 'package:campus_mobile_experimental/app_constants.dart';
@@ -29,13 +31,10 @@ import 'package:campus_mobile_experimental/ui/shuttle/shuttle_card.dart';
 import 'package:campus_mobile_experimental/ui/student_id/student_id_card.dart';
 import 'package:campus_mobile_experimental/ui/weather/weather_card.dart';
 import 'package:campus_mobile_experimental/ui/wifi/wifi_card.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:uni_links2/uni_links.dart';
 import 'package:flutter/rendering.dart';
-
-import '../common/card_container.dart';
 
 //--- code to track size changes of dynamic web card widget content ---
 typedef void OnWidgetSizeChange(Size size);
@@ -124,7 +123,7 @@ class _HomeState extends State<Home> {
     );
   }
 
-  Future<Null> initUniLinks(BuildContext context) async {
+  Future<Null> initUniLinks() async {
     // deep links are received by this method
     // the specific host needs to be added in AndroidManifest.xml and Info.plist
     // currently, this method handles executing custom map query
@@ -138,7 +137,7 @@ class _HomeState extends State<Home> {
       var uri = Uri.dataFromString(initialLink);
       var query = uri.queryParameters['query']!;
       // redirect query to maps tab and search with query
-      executeQuery(context, query);
+      executeQuery(query);
     }
 
     // used to handle links while app is in foreground/background
@@ -148,127 +147,92 @@ class _HomeState extends State<Home> {
         var uri = Uri.dataFromString(link);
         var query = uri.queryParameters['query']!;
         // redirect query to maps tab and search with query
-        executeQuery(context, query);
+        executeQuery(query);
         // received deeplink, cancel stream to prevent memory leaks
         _sub.cancel();
       }
     });
   }
 
-  void executeQuery(BuildContext context, String query) {
-    Provider.of<MapsDataProvider>(context, listen: false)
+  void executeQuery(String query) {
+    context.read<MapsDataProvider>()
         .searchBarController
         .text = query;
-    Provider.of<MapsDataProvider>(context, listen: false).fetchLocations();
-    Provider.of<BottomNavigationBarProvider>(context, listen: false)
+    context.read<MapsDataProvider>().fetchLocations();
+    context.read<BottomNavigationBarProvider>()
         .currentIndex = NavigatorConstants.MapTab;
-    Provider.of<CustomAppBar>(context, listen: false).changeTitle("Maps");
+    context.read<CustomAppBar>().changeTitle("Maps");
     executedInitialDeeplinkQuery = true;
   }
 
   @override
   Widget build(BuildContext context) {
-    initUniLinks(context);
+    initUniLinks();
     _connectivityProvider = Provider.of<InternetConnectivityProvider>(context);
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: cardMargin, vertical: 0.0),
+      padding: const EdgeInsets.symmetric(horizontal: cardMargin, vertical: 0.0),
       child: ListView(
         controller: _controller,
-        padding: EdgeInsets.only(
+        padding: const EdgeInsets.only(
             top: cardMargin + 2.0, right: 0.0, bottom: 0.0, left: 0.0),
-        children: createList(context),
+        children: createList(),
       ),
     );
   }
 
-  List<Widget> createList(BuildContext context) {
-    List<Widget> orderedCards =
-        getOrderedCardsList(Provider.of<CardsDataProvider>(context).cardOrder!);
-    List<Widget> noticesCards = getNoticesCardsList(
-        Provider.of<NoticesDataProvider>(context).noticesModel!);
-
-    return noticesCards + orderedCards;
+  List<Widget> createList()
+  {
+    final orderedCards = getOrderedCardsList(context.watch<CardsDataProvider>().cardOrder);
+    final noticesCards = getNoticesCardsList(context.watch<NoticesDataProvider>().noticesModel);
+    return [...noticesCards, ...orderedCards];
   }
 
-  List<Widget> getNoticesCardsList(List<NoticesModel> notices) {
-    List<Widget> noticesCards = [];
-    for (NoticesModel notice in notices) {
-      noticesCards.add(NoticesCard(notice: notice));
-    }
-    return noticesCards;
-  }
+  List<Widget> getNoticesCardsList(List<NoticesModel> notices) =>
+    notices.map((notice) => NoticesCard(notice: notice)).whereType<NoticesCard>().toList();
 
-  List<Widget> getOrderedCardsList(List<String> order) {
-    List<Widget> orderedCards = [];
-    Map<String, CardsModel?>? webCards =
-        Provider.of<CardsDataProvider>(context, listen: false).webCards;
+  // Constructor tear-offs used below to generate ordered cards list in O(1) time
+  static const _cardCtors = {
+    'NativeScanner': NativeScannerCard.new,
+    'MyStudentChart': MyStudentChartCard.new,
+    'dining': DiningCard.new,
+    'news': NewsCard.new,
+    'events': EventsCard.new,
+    'weather': WeatherCard.new,
+    'availability': AvailabilityCard.new,
+    'schedule': ClassScheduleCard.new,
+    'finals': FinalsCard.new,
+    'MyUCSDChart': MyUCSDChartCard.new,
+    'student_id': StudentIdCard.new,
+    'employee_id': EmployeeIdCard.new,
+    'parking': ParkingCard.new,
+    'speed_test': WiFiCard.new,
+    'shuttle': ShuttleCard.new
+  };
 
-    for (String card in order) {
-      if (!webCards!.containsKey(card)) {
-        switch (card) {
-          case 'NativeScanner':
-            orderedCards.insert(0, NativeScannerCard());
-            break;
-          case 'MyStudentChart':
-            orderedCards.add(MyStudentChartCard());
-            break;
-          case 'dining':
-            orderedCards.add(DiningCard());
-            break;
-          case 'news':
-            orderedCards.add(NewsCard());
-            break;
-          case 'events':
-            orderedCards.add(EventsCard());
-            break;
-          case 'weather':
-            orderedCards.add(WeatherCard());
-            break;
-          case 'availability':
-            orderedCards.add(AvailabilityCard());
-            break;
-          case 'schedule':
-            orderedCards.add(ClassScheduleCard());
-            break;
-          case 'finals':
-            orderedCards.add(FinalsCard());
-            break;
-          case 'MyUCSDChart':
-            orderedCards.add(MyUCSDChartCard());
-            break;
-          case 'student_id':
-            orderedCards.add(StudentIdCard());
-            break;
-          case 'employee_id':
-            orderedCards.add(EmployeeIdCard());
-            break;
-          case 'parking':
-            orderedCards.add(ParkingCard());
-            break;
-          case 'speed_test':
-            orderedCards.add(WiFiCard());
-            break;
-          case 'shuttle':
-            orderedCards.add(ShuttleCard());
-            break;
-        }
+  List<Widget> getOrderedCardsList(List<String> order)
+  {
+    final orderedCards = <Widget>[];
+    final webCards = context.read<CardsDataProvider>().webCards;
+
+    for (String cardName in order) {
+      // TODO: if-branches logic here theoretically could be simplified
+      if (!webCards.containsKey(cardName)) {
+        final cardCtor = _cardCtors[cardName];
+        if (cardCtor != null)
+          orderedCards.add(cardCtor());
       } else {
         // dynamically insert webCards into the list
         orderedCards.add(StatefulBuilder(
           builder: (context, setState) {
-            var currentCard = card;
+            var currentCard = cardName;
             if (webViewCardNotLoaded[currentCard] == null) {
               webViewCardNotLoaded[currentCard] = true;
             }
             return Stack(children: <Widget>[
               MeasureSize(
                 onChange: (Size size) {
-                  setNewCardHeight(card, size.height);
-                  if (size.height == webViewCardHeights[card]) {
-                    webViewCardNotLoaded[card] = false;
-                  } else {
-                    webViewCardNotLoaded[card] = true;
-                  }
+                  setNewCardHeight(cardName, size.height);
+                  webViewCardNotLoaded[cardName] = (size.height != webViewCardHeights[cardName]);
                   setState(() {});
                 },
                 child: Align(
@@ -286,7 +250,7 @@ class _HomeState extends State<Home> {
                     minHeight: webViewCardHeights[currentCard] ?? 0.0,
                     minWidth: 400.0),
                 child: Builder(builder: (BuildContext context) {
-                  final currentCard = card;
+                  final currentCard = cardName;
                   return Visibility(
                     visible: webViewCardNotLoaded[currentCard]!,
                     child: IntrinsicHeight(

@@ -14,12 +14,9 @@ import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:provider/provider.dart';
 
-class PushNotificationDataProvider extends ChangeNotifier {
+class PushNotificationDataProvider extends ChangeNotifier
+{
   PushNotificationDataProvider() {
-    ///INITIALIZE SERVICES
-    _notificationService = NotificationService();
-    deviceInfoPlugin = DeviceInfoPlugin();
-    _fcm = FirebaseMessaging.instance;
     initState();
   }
 
@@ -27,19 +24,19 @@ class PushNotificationDataProvider extends ChangeNotifier {
   late BuildContext context;
 
   ///Models
-  late FirebaseMessaging _fcm;
-  late DeviceInfoPlugin deviceInfoPlugin;
-  Map<String, dynamic> _deviceData = <String, dynamic>{};
+  FirebaseMessaging _fcm = FirebaseMessaging.instance;
+  DeviceInfoPlugin deviceInfoPlugin = DeviceInfoPlugin();
+  Map<String, dynamic> _deviceData = {};
 
   ///STATES
   DateTime? _lastUpdated;
   String? _error;
-  List<TopicsModel>? _topicsModel;
-  Map<String?, bool> _topicSubscriptionState = <String?, bool>{};
+  late List<TopicsModel> _topicsModel;
+  Map<String?, bool> _topicSubscriptionState = {};
   Set<String> _receivedMessageIds = Set();
 
   ///SERVICES
-  late NotificationService _notificationService;
+  NotificationService _notificationService = NotificationService();
 
   /// invokes correct method to receive device info
   /// invokes [fetchTopicsList]
@@ -75,14 +72,13 @@ class PushNotificationDataProvider extends ChangeNotifier {
       this.context = context;
       const AndroidInitializationSettings initializationSettingsAndroid =
           AndroidInitializationSettings("@drawable/ic_notif_round");
-      final IOSInitializationSettings initializationSettingsIOS =
-          IOSInitializationSettings();
+      final initializationSettingsIOS = DarwinInitializationSettings();
       final InitializationSettings initializationSettings =
           InitializationSettings(
               android: initializationSettingsAndroid,
               iOS: initializationSettingsIOS);
       await flutterLocalNotificationsPlugin.initialize(initializationSettings,
-          onSelectNotification: selectNotification);
+          onDidReceiveNotificationResponse: selectNotification);
 
       RemoteMessage? initialMessage =
           await FirebaseMessaging.instance.getInitialMessage();
@@ -132,7 +128,8 @@ class PushNotificationDataProvider extends ChangeNotifier {
   }
 
   ///Handles notification when selected
-  Future selectNotification(String? payload) async {
+  void selectNotification(NotificationResponse details)
+  {
     /// Fetch in-app messages
     Provider.of<MessagesDataProvider>(this.context, listen: false)
         .fetchMessages(true);
@@ -159,10 +156,10 @@ class PushNotificationDataProvider extends ChangeNotifier {
             importance: Importance.max,
             priority: Priority.high,
             showWhen: false);
-    const IOSNotificationDetails();
+    const DarwinNotificationDetails();
     const NotificationDetails platformChannelSpecifics = NotificationDetails(
         android: androidPlatformChannelSpecifics,
-        iOS: IOSNotificationDetails());
+        iOS: DarwinNotificationDetails());
     //This is where you put info from firebase
     await flutterLocalNotificationsPlugin.show(0, message.notification!.title,
         message.notification!.body, platformChannelSpecifics,
@@ -176,7 +173,7 @@ class PushNotificationDataProvider extends ChangeNotifier {
     Map<String?, bool> newTopics = <String?, bool>{};
 
     if (await _notificationService.fetchTopics()) {
-      for (TopicsModel model in _notificationService.topicsModel!) {
+      for (TopicsModel model in _notificationService.topicsModel) {
         for (Topic topic in model.topics!) {
           newTopics[topic.topicId] =
               _topicSubscriptionState[topic.topicId] ?? false;
@@ -288,13 +285,13 @@ class PushNotificationDataProvider extends ChangeNotifier {
   }
 
   void unsubscribeFromAllTopics() {
-    _unsubscribeToTopics(_topicSubscriptionState.keys.toList());
+    _unsubscribeToTopics(_topicSubscriptionState.keys.whereType<String>().toList());
     for (String? topic in _topicSubscriptionState.keys) {
       topicSubscriptionState[topic] = false;
     }
   }
 
-  void toggleNotificationsForTopic(String? topic) {
+  void toggleNotificationsForTopic(String topic) {
     if (_topicSubscriptionState[topic] ?? true) {
       _topicSubscriptionState[topic] = false;
       _unsubscribeToTopics([topic]);
@@ -320,20 +317,18 @@ class PushNotificationDataProvider extends ChangeNotifier {
 
   /// Iterates through passed in topics list
   /// Invokes [unsubscribeFromTopic] on firebase object [_fcm]
-  void _unsubscribeToTopics(List<String?> topics) {
-    for (String? topic in topics) {
-      if ((topic ?? "").isNotEmpty) {
+  void _unsubscribeToTopics(List<String> topics) {
+    for (String topic in topics) {
+      if (topic.isNotEmpty) {
         _topicSubscriptionState[topic] = false;
-        if (topic != null) {
-          _fcm.unsubscribeFromTopic(topic);
-        }
+        _fcm.unsubscribeFromTopic(topic);
       }
     }
   }
 
   /// Get the topic name given the topic id
   String? getTopicName(String topicId) {
-    for (TopicsModel model in _topicsModel!) {
+    for (TopicsModel model in _topicsModel) {
       for (Topic topic in model.topics!) {
         if (topic.topicId == topicId) {
           return topic.topicMetadata!.name;
@@ -346,7 +341,7 @@ class PushNotificationDataProvider extends ChangeNotifier {
   /// Get student only topics
   List<String?> studentTopics() {
     List<String?> topicsToReturn = [];
-    for (TopicsModel model in _notificationService.topicsModel ?? []) {
+    for (TopicsModel model in _notificationService.topicsModel) {
       if (model.audienceId == 'student') {
         for (Topic topic in model.topics!) {
           topicsToReturn.add(topic.topicId);
@@ -360,7 +355,7 @@ class PushNotificationDataProvider extends ChangeNotifier {
   /// Get staff only topics
   List<String?> staffTopics() {
     List<String?> topicsToReturn = [];
-    for (TopicsModel model in _notificationService.topicsModel ?? []) {
+    for (TopicsModel model in _notificationService.topicsModel) {
       if (model.audienceId == 'staff') {
         for (Topic topic in model.topics!) {
           topicsToReturn.add(topic.topicId);
@@ -374,7 +369,7 @@ class PushNotificationDataProvider extends ChangeNotifier {
   /// Get all public topics
   List<String?> publicTopics() {
     List<String?> topicsToReturn = [];
-    for (TopicsModel model in _topicsModel ?? []) {
+    for (TopicsModel model in _topicsModel) {
       if (model.audienceId == 'all') {
         for (Topic topic in model.topics!) {
           topicsToReturn.add(topic.topicId);
